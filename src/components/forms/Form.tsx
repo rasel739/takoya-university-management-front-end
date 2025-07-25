@@ -1,3 +1,4 @@
+'use client';
 // import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import { FieldValues, FormProvider, SubmitHandler, useForm, UseFormProps } from 'react-hook-form';
@@ -47,7 +48,6 @@ const Form = <T extends FieldValues>({ children, onSubmit, options }: FormProps<
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         {children}
-        <input type='submit' value='Submit' />
       </form>
     </FormProvider>
   );

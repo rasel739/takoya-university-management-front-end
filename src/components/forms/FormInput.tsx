@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from 'antd';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 interface IInput {
   id?: string;
@@ -26,13 +26,14 @@ const FormInput = ({
   validation,
   disabled,
 }: IInput) => {
-  const { control } = useForm();
+  const { control } = useFormContext();
   return (
     <>
       {label && <label htmlFor={id}>{label}</label>}
       <Controller
         control={control}
         name={name}
+        rules={validation}
         render={({ field }) => (
           <Input
             type={type}
@@ -41,7 +42,7 @@ const FormInput = ({
             placeholder={placeholder}
             disabled={disabled}
             {...field}
-            value={value ? value : field.value}
+            value={value ?? field.value}
           />
         )}
       />

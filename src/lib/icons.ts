@@ -14,6 +14,7 @@ import { SiCoursera } from 'react-icons/si';
 import { FaDiscourse } from 'react-icons/fa';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import { HiAcademicCap } from 'react-icons/hi';
+import { FcHome } from 'react-icons/fc';
 
 export const Icons = {
   Profile: CgProfile,
@@ -30,4 +31,5 @@ export const Icons = {
   StudentPayment: MdOutlinePayment,
   StudentCourse: FaDiscourse,
   StudentCourseSchedules: AiOutlineSchedule,
+  Home: FcHome,
 };

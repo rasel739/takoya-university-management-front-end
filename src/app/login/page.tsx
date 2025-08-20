@@ -1,5 +1,4 @@
 'use client';
-import Starfield from 'react-starfield';
 import { Button, Col, Row } from 'antd';
 import loginImage from '@/assets/Login.gif';
 import Image from 'next/image';
@@ -21,13 +20,7 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <Starfield
-        starCount={1000}
-        starColor={[255, 255, 255]}
-        speedFactor={0.05}
-        backgroundColor='white'
-      />
+    <div className='login-bg'>
       <Row style={{ minHeight: '100vh' }} justify='center' align='middle'>
         <Col sm={12} md={16} lg={10}>
           <Image src={loginImage} alt='Login-gif' width={500} />
@@ -36,10 +29,10 @@ const Login = () => {
           <h1>First Login your account</h1>
           <div>
             <Form submitHandler={onSubmit}>
-              <div>
+              <div style={{ margin: '15px 0' }}>
                 <FormInput type='text' size='large' placeholder='ID' name='id' label='User Id' />
               </div>
-              <div>
+              <div style={{ margin: '15px 0' }}>
                 <FormInput
                   type='password'
                   size='large'

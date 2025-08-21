@@ -4,6 +4,7 @@ import { Icons } from '@/lib/icons';
 import { removeUserInfo } from '@/service/auth.service';
 import { authKey } from '@/constants/storageKey';
 import { useRouter } from 'next/navigation';
+import { toastifyMessage, TuToastify } from '@/lib/reactToastify';
 
 const { Header: AntHeader } = Layout;
 
@@ -31,6 +32,7 @@ const Headers = () => {
 
   const handleLogout = () => {
     removeUserInfo(authKey);
+    TuToastify(toastifyMessage.logoutSuccess, 'success');
     router.push('/login');
   };
 

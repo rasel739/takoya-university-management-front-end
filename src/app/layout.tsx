@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from '@/lib/Providers';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { Flip, ToastContainer } from 'react-toastify';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -25,6 +26,19 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
+      <ToastContainer
+        position='bottom-right'
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='light'
+        transition={Flip}
+      />
       <html lang='en'>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
           <AntdRegistry>{children}</AntdRegistry>

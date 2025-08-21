@@ -1,12 +1,14 @@
-import { Flex, Spin } from 'antd';
+import { Row, Space, Spin } from 'antd';
 import React from 'react';
 
 const Loading = () => {
   return (
     <div>
-      <Flex justify='center' align='center' style={{ height: '100vh', width: '100%' }}>
-        <Spin size='large' />
-      </Flex>
+      <Row justify='center' align='middle' style={{ height: '100vh', width: '100%' }}>
+        <Space>
+          <Spin tip='Loading' size='large' />
+        </Space>
+      </Row>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { useUserLoginMutation } from '@/redux/api/authApi';
 import { setUserInfo } from '@/service/auth.service';
 import { useRouter } from 'next/navigation';
+import { toastifyMessage, TuToastify } from '@/lib/reactToastify';
 
 type FormData = {
   id: string;
@@ -21,11 +22,14 @@ const LoginForm = () => {
     try {
       const res = await userLogin({ ...data }).unwrap();
       if (res?.accessToken) {
+        console.log('Login successful:', res);
+        TuToastify(toastifyMessage.loginSuccess, 'success');
         router.push('/profile');
       }
 
       setUserInfo({ accessToken: res?.accessToken });
     } catch (error) {
+      TuToastify(toastifyMessage.loginFailed, 'error');
       console.error('Login failed:', error);
     }
   };

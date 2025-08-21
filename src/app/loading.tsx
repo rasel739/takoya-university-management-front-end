@@ -3,9 +3,11 @@ import React from 'react';
 
 const Loading = () => {
   return (
-    <Flex align='center' gap='middle'>
-      <Spin size='large' />
-    </Flex>
+    <div>
+      <Flex justify='center' align='center' style={{ height: '100vh', width: '100%' }}>
+        <Spin size='large' />
+      </Flex>
+    </div>
   );
 };
 

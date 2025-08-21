@@ -1,11 +1,13 @@
 import { Content } from 'antd/es/layout/layout';
 import TUBreadCrumb from './TUBreadCrumb';
+import Header from './Header';
 
 const Contents: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const base = 'admin';
 
   return (
     <Content style={{ minHeight: '100vh', color: 'black' }}>
+      <Header />
       <TUBreadCrumb
         items={[
           {

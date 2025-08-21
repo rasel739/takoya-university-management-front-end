@@ -5,15 +5,26 @@ import Image from 'next/image';
 import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
 import { SubmitHandler } from 'react-hook-form';
+import { useUserLoginMutation } from '@/redux/api/authApi';
+import { setUserInfo } from '@/service/auth.service';
+import { useRouter } from 'next/navigation';
 
 type FormData = {
   id: string;
   password: string;
 };
 const Login = () => {
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const router = useRouter();
+  const [userLogin] = useUserLoginMutation();
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      console.log('Login data:', data);
+      const res = await userLogin({ ...data }).unwrap();
+      if (res?.accessToken) {
+        router.push('/profile');
+      }
+
+      setUserInfo({ accessToken: res?.accessToken });
     } catch (error) {
       console.error('Login failed:', error);
     }

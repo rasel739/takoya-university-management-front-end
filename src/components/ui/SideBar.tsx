@@ -4,13 +4,16 @@ import React, { useState } from 'react';
 
 import { sidebaritems } from '@/constants/sidebaritems';
 import { USER_ROLE } from '@/constants/role';
+import { getUserInfo } from '@/service/auth.service';
 
 const { Sider } = Layout;
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const role = USER_ROLE.ADMIN;
+  const {role} = getUserInfo() as { role: USER_ROLE };
+
+
 
   return (
     <Sider

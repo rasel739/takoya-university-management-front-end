@@ -1,3 +1,5 @@
-const reducer = {};
+import { baseApi } from './api/baseApi';
 
-export default reducer;
+export const reducer = {
+  [baseApi.reducerPath]: baseApi.reducer,
+};

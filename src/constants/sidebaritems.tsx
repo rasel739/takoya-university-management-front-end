@@ -73,6 +73,15 @@ export const sidebaritems = (role: string) => {
     sideBarLink('Manage Admin', `/${role}/admin`, <Icons.ManageAdmin {...iconProps} />),
     sideBarLink('Manage User', `/${role}/user`, <Icons.ManageUser {...iconProps} />),
     {
+      label: 'Manage Permissions',
+      key: 'manage-permissions',
+      icon: <Icons.ManagePermissions {...iconProps} />,
+      children: [
+        sideBarLink('Roles', `/${role}/permissions/roles`),
+        sideBarLink('Permissions', `/${role}/permissions/permissions`),
+      ],
+    },
+    {
       label: 'Management',
       key: 'management',
       icon: <Icons.ManageTableList {...iconProps} />,

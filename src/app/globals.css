@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: 'Outfit', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
 /* not found page */
@@ -37,8 +41,17 @@
 }
 .sidebar_title {
   color: white;
-  font-size: 1.5rem;
+  font-size: 0.8rem;
   text-align: center;
   font-weight: bold;
-  margin: 0.5rem 0 1rem 0;
+  margin: 1.1rem 0 1rem 0;
 }
+
+/* login-page-start */
+
+.login-bg {
+  background-image: radial-gradient(125% 125% at 50% 90%, #ffffff 40%, #14b8a6 100%);
+  background-size: 100% 100%;
+}
+
+/* login-page-end */

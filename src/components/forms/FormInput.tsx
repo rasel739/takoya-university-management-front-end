@@ -29,22 +29,34 @@ const FormInput = ({
   const { control } = useFormContext();
   return (
     <>
-      {label && <label htmlFor={id}>{label}</label>}
+      <div style={{ marginBottom: '10px' }}>{label && <label htmlFor={id}>{label}</label>}</div>
       <Controller
         control={control}
         name={name}
         rules={validation}
-        render={({ field }) => (
-          <Input
-            type={type}
-            size={size}
-            id={id}
-            placeholder={placeholder}
-            disabled={disabled}
-            {...field}
-            value={value ?? field.value}
-          />
-        )}
+        render={({ field }) =>
+          type === 'password' ? (
+            <Input.Password
+              type={type}
+              size={size}
+              id={id}
+              placeholder={placeholder}
+              disabled={disabled}
+              {...field}
+              value={value ?? field.value}
+            />
+          ) : (
+            <Input
+              type={type}
+              size={size}
+              id={id}
+              placeholder={placeholder}
+              disabled={disabled}
+              {...field}
+              value={value ?? field.value}
+            />
+          )
+        }
       />
     </>
   );

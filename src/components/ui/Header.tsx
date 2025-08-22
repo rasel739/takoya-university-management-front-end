@@ -1,7 +1,7 @@
 import { Layout, Menu, Dropdown, MenuProps, Avatar, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Icons } from '@/lib/icons';
-import { removeUserInfo } from '@/service/auth.service';
+import { getUserInfo, removeUserInfo } from '@/service/auth.service';
 import { authKey } from '@/constants/storageKey';
 import { useRouter } from 'next/navigation';
 import { toastifyMessage, TuToastify } from '@/lib/reactToastify';
@@ -29,6 +29,7 @@ const navItems = [
 
 const Headers = () => {
   const router = useRouter();
+  const { role } = getUserInfo() as { role: string };
 
   const handleLogout = () => {
     removeUserInfo(authKey);
@@ -73,6 +74,7 @@ const Headers = () => {
           items={navItems}
           style={{ flex: 1, minWidth: 0 }}
         />
+        <span style={{ color: 'white' }}>{role}</span>
         <Dropdown menu={{ items }}>
           <Avatar size={50} icon={<UserOutlined />} />
         </Dropdown>

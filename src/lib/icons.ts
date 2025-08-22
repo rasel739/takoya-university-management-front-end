@@ -8,13 +8,14 @@ import {
   MdOutlineAppRegistration,
   MdOutlinePayment,
 } from 'react-icons/md';
-import { FaUserCircle,FaUserLock,FaDiscourse } from 'react-icons/fa';
+import { FaUserCircle, FaUserLock, FaDiscourse } from 'react-icons/fa';
 import { FaTableList } from 'react-icons/fa6';
 import { SiCoursera } from 'react-icons/si';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import { HiAcademicCap } from 'react-icons/hi';
 import { FcHome } from 'react-icons/fc';
 import { LuLogOut } from 'react-icons/lu';
+import { IoIosCreate } from 'react-icons/io';
 export const Icons = {
   Profile: CgProfile,
   ManageStudent: PiStudentFill,
@@ -31,6 +32,7 @@ export const Icons = {
   StudentPayment: MdOutlinePayment,
   StudentCourse: FaDiscourse,
   StudentCourseSchedules: AiOutlineSchedule,
+  Create: IoIosCreate,
   Home: FcHome,
   Logout: LuLogOut,
 };

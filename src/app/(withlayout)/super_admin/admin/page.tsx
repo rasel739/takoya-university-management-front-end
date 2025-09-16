@@ -1,9 +1,9 @@
 'use client';
 import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
 import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-import { Button, Input, message } from 'antd';
+
 import Link from 'next/link';
-import { DeleteOutlined, EditOutlined, ReloadOutlined, EyeOutlined } from '@ant-design/icons';
+
 import { useState } from 'react';
 import { useDebounced } from '@/redux/hooks';
 import UMTable from '@/components/ui/UMTable';
@@ -11,6 +11,8 @@ import { useAdminsQuery, useDeleteAdminMutation } from '@/redux/api/adminApi';
 import { IDepartment } from '@/types';
 import dayjs from 'dayjs';
 import UMModal from '@/components/ui/UMModal';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
 
 const AdminPage = () => {
   const query: Record<string, any> = {};
@@ -91,9 +93,7 @@ const AdminPage = () => {
         return (
           <>
             <Link href={`/super_admin/admin/details/${data}`}>
-              <Button onClick={() => console.log(data)} type='primary'>
-                <EyeOutlined />
-              </Button>
+              <Button onClick={() => console.log(data)}>Details icon</Button>
             </Link>
             <Link href={`/super_admin/admin/edit/${data}`}>
               <Button
@@ -101,21 +101,18 @@ const AdminPage = () => {
                   margin: '0px 5px',
                 }}
                 onClick={() => console.log(data)}
-                type='primary'
               >
-                <EditOutlined />
+                Edit Icon
               </Button>
             </Link>
             <Button
-              type='primary'
               onClick={() => {
                 setOpen(true);
                 setAdminId(data);
               }}
-              danger
               style={{ marginLeft: '3px' }}
             >
-              <DeleteOutlined />
+              Delete Icon
             </Button>
           </>
         );
@@ -145,11 +142,11 @@ const AdminPage = () => {
     try {
       const res = await deleteAdmin(id);
       if (res) {
-        message.success('Admin Successfully Deleted!');
+        TuToastify('Admin Successfully Deleted!', 'success');
         setOpen(false);
       }
     } catch (error: any) {
-      message.error(error.message);
+      TuToastify(error.message, 'error');
     }
   };
 
@@ -168,8 +165,7 @@ const AdminPage = () => {
         link={actionBarObj.admin.link}
         btnText={actionBarObj.admin.btnText}
       />
-      <Input
-        size='large'
+      <input
         placeholder='Search'
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{
@@ -178,11 +174,11 @@ const AdminPage = () => {
       />
       <div>
         <Link href='/super_admin/admin/create'>
-          <Button type='primary'>Create Admin</Button>
+          <Button>Create Admin</Button>
         </Link>
         {(!!sortBy || !!sortOrder || !!searchTerm) && (
-          <Button style={{ margin: '0px 5px' }} type='primary' onClick={resetFilters}>
-            <ReloadOutlined />
+          <Button style={{ margin: '0px 5px' }} onClick={resetFilters}>
+            Reload Icon
           </Button>
         )}
       </div>

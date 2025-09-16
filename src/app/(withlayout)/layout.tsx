@@ -1,9 +1,6 @@
 'use client';
-import Contents from '@/components/ui/Contents';
-import SideBar from '@/components/ui/SideBar';
 import { isLoggedIn } from '@/service/auth.service';
 
-import { Layout, Row, Space, Spin } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -20,27 +17,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, [router, isLoading, userLoggedIn]);
 
   if (!isLoading) {
-    return (
-      <Row
-        justify='center'
-        align='middle'
-        style={{
-          height: '100vh',
-        }}
-      >
-        <Space>
-          <Spin tip='Loading' size='large'></Spin>
-        </Space>
-      </Row>
-    );
+    return <div>Loading...</div>;
   }
 
-  return (
-    <Layout hasSider>
-      <SideBar />
-      <Contents>{children}</Contents>
-    </Layout>
-  );
+  return <div>{children}</div>;
 };
 
 export default DashboardLayout;

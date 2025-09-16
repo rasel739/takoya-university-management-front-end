@@ -1,6 +1,6 @@
-import { Button } from 'antd';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import React from 'react';
+
 const NotFoundPage = () => {
   return (
     <div className='not_found'>
@@ -10,9 +10,7 @@ const NotFoundPage = () => {
       </div>
       <div>
         <Link href='/'>
-          <Button type='primary' size='large'>
-            Go to Home
-          </Button>
+          <Button>Go to Home</Button>
         </Link>
       </div>
     </div>

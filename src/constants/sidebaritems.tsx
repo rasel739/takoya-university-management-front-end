@@ -26,18 +26,11 @@ export const sidebaritems = (role: string) => {
   ];
 
   const commonAdminSidebarItems: MenuProps['items'] = [
-    {
-      label: 'Manage Student',
-      key: 'manage-student',
-      icon: <Icons.ManageStudent {...iconProps} />,
-      children: [
-        sideBarLink(
-          'Students Create',
-          `/${role}/manage-student/create`,
-          <Icons.Create {...iconProps} />
-        ),
-      ],
-    },
+    sideBarLink(
+      'Manage Student',
+      `/${role}/manage-student`,
+      <Icons.ManageStudent {...iconProps} />
+    ),
     sideBarLink(
       'Manage Faculty',
       `/${role}/manage-faculty`,

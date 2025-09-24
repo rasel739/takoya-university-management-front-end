@@ -16,10 +16,10 @@ export const sidebaritems = (role: string) => {
   const defaultSidebarItems: MenuProps['items'] = [
     {
       label: 'Profile',
-      key: 'profile',
+      key: `profile`,
       icon: <Icons.Profile {...iconProps} />,
       children: [
-        sideBarLink('Account Profile', `/${role}/account-profile`),
+        sideBarLink('Account Profile', `/${role}`),
         sideBarLink('Change Password', `/${role}/change-password`),
       ],
     },
@@ -28,7 +28,7 @@ export const sidebaritems = (role: string) => {
   const commonAdminSidebarItems: MenuProps['items'] = [
     sideBarLink(
       'Manage Student',
-      `/${role}/manage-students`,
+      `/${role}/manage-student`,
       <Icons.ManageStudent {...iconProps} />
     ),
     sideBarLink(

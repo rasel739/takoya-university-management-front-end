@@ -1,7 +1,6 @@
 import { Icons } from '@/lib/icons';
 import { Breadcrumb } from 'antd';
 import Link from 'next/link';
-import React from 'react';
 
 const TUBreadCrumb = ({
   items,

@@ -1,63 +1,72 @@
 'use client';
 
-import { Input } from 'antd';
-import { Controller, useFormContext } from 'react-hook-form';
+import { getErrorMessageByPropertyName } from '@/utils/schema-validator';
 
+import { useFormContext, Controller } from 'react-hook-form';
 interface IInput {
-  id?: string;
   name: string;
-  label?: string;
-  type: string;
+  type?: string;
   size?: 'large' | 'small';
   value?: string | string[] | undefined;
+  id?: string;
   placeholder?: string;
   validation?: object;
-  disabled?: boolean;
+  label?: string;
+  required?: boolean;
 }
 
 const FormInput = ({
-  id,
   name,
   type,
-  size,
+  size = 'large',
   value,
+  id,
   placeholder,
-  label,
   validation,
-  disabled,
+  label,
+  required,
 }: IInput) => {
-  const { control } = useFormContext();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+
+  const errorMessage = getErrorMessageByPropertyName(errors, name);
+
   return (
     <>
-      <div style={{ marginBottom: '10px' }}>{label && <label htmlFor={id}>{label}</label>}</div>
+      {required ? (
+        <span
+          style={{
+            color: 'red',
+          }}
+        >
+          *
+        </span>
+      ) : null}
+      {label ? label : null}
       <Controller
         control={control}
         name={name}
-        rules={validation}
         render={({ field }) =>
           type === 'password' ? (
-            <Input.Password
+            <input
               type={type}
-              size={size}
-              id={id}
               placeholder={placeholder}
-              disabled={disabled}
               {...field}
-              value={value ?? field.value}
+              value={value ? value : field.value}
             />
           ) : (
-            <Input
+            <input
               type={type}
-              size={size}
-              id={id}
               placeholder={placeholder}
-              disabled={disabled}
               {...field}
-              value={value ?? field.value}
+              value={value ? value : field.value}
             />
           )
         }
       />
+      <small style={{ color: 'red' }}>{errorMessage}</small>
     </>
   );
 };

@@ -1,14 +1,13 @@
 'use client';
-import { Button, Col, Row } from 'antd';
 import loginImage from '@/assets/Login.gif';
 import Image from 'next/image';
 import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
 import { SubmitHandler } from 'react-hook-form';
 import { useUserLoginMutation } from '@/redux/api/authApi';
-import { setUserInfo } from '@/service/auth.service';
 import { useRouter } from 'next/navigation';
 import { toastifyMessage, TuToastify } from '@/lib/reactToastify';
+import { Button } from '../ui/button';
 
 type FormData = {
   id: string;
@@ -26,8 +25,6 @@ const LoginForm = () => {
         TuToastify(toastifyMessage.loginSuccess, 'success');
         router.push('/profile');
       }
-
-      setUserInfo({ accessToken: res?.accessToken });
     } catch (error) {
       TuToastify(toastifyMessage.loginFailed, 'error');
       console.error('Login failed:', error);
@@ -36,11 +33,11 @@ const LoginForm = () => {
 
   return (
     <div className='login-bg'>
-      <Row style={{ minHeight: '100vh' }} justify='center' align='middle'>
-        <Col sm={12} md={16} lg={10}>
+      <div className='min-h-screen flex justify-center items-center gap-10'>
+        <div>
           <Image src={loginImage} alt='Login-gif' width={500} />
-        </Col>
-        <Col sm={12} md={8} lg={8}>
+        </div>
+        <div>
           <h1>First Login your account</h1>
           <div>
             <Form submitHandler={onSubmit}>
@@ -57,14 +54,12 @@ const LoginForm = () => {
                 />
               </div>
               <div>
-                <Button type='primary' htmlType='submit' size='large'>
-                  Login
-                </Button>
+                <Button variant='outline'>Login</Button>
               </div>
             </Form>
           </div>
-        </Col>
-      </Row>
+        </div>
+      </div>
     </div>
   );
 };

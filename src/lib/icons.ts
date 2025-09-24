@@ -1,38 +1,43 @@
-import { CgProfile } from 'react-icons/cg';
-import { PiStudentFill } from 'react-icons/pi';
 import {
-  MdManageAccounts,
-  MdOutlineAccountTree,
-  MdOutlineManageAccounts,
-  MdAdminPanelSettings,
-  MdOutlineAppRegistration,
-  MdOutlinePayment,
-} from 'react-icons/md';
-import { FaUserCircle, FaUserLock, FaDiscourse } from 'react-icons/fa';
-import { FaTableList } from 'react-icons/fa6';
-import { SiCoursera } from 'react-icons/si';
-import { AiOutlineSchedule } from 'react-icons/ai';
-import { HiAcademicCap } from 'react-icons/hi';
-import { FcHome } from 'react-icons/fc';
-import { LuLogOut } from 'react-icons/lu';
-import { IoIosCreate } from 'react-icons/io';
+  ArrowBigRight,
+  BadgeDollarSign,
+  BookHeadphones,
+  CalendarCheck,
+  ChartNoAxesGantt,
+  CircleUser,
+  createLucideIcon,
+  Home,
+  LogOut,
+  Mail,
+  MessageCircleWarning,
+  Settings,
+  ShieldHalf,
+  Table,
+  User,
+  UserCheck,
+  UserCircle2,
+  UserCog,
+  UserPlus,
+} from 'lucide-react';
 export const Icons = {
-  Profile: CgProfile,
-  ManageStudent: PiStudentFill,
-  ManageFaculty: MdManageAccounts,
-  ManageAcademic: MdOutlineAccountTree,
-  AcademicReport: HiAcademicCap,
-  Management: MdOutlineManageAccounts,
-  ManageAdmin: MdAdminPanelSettings,
-  ManageUser: FaUserCircle,
-  ManagePermissions: FaUserLock,
-  ManageTableList: FaTableList,
-  FacultyCourse: SiCoursera,
-  StudentRegistration: MdOutlineAppRegistration,
-  StudentPayment: MdOutlinePayment,
-  StudentCourse: FaDiscourse,
-  StudentCourseSchedules: AiOutlineSchedule,
-  Create: IoIosCreate,
-  Home: FcHome,
-  Logout: LuLogOut,
+  Profile: UserCog,
+  ManageStudent: UserCircle2,
+  ManageFaculty: UserCheck,
+  ManageAcademic: ChartNoAxesGantt,
+  AcademicReport: MessageCircleWarning,
+  Management: CircleUser,
+  ManageAdmin: Settings,
+  ManageUser: User,
+  ManagePermissions: UserPlus,
+  ManageTableList: Table,
+  FacultyCourse: ShieldHalf,
+  StudentRegistration: UserPlus,
+  StudentPayment: BadgeDollarSign,
+  StudentCourse: BookHeadphones,
+  StudentCourseSchedules: CalendarCheck,
+  Create: createLucideIcon,
+  Home: Home,
+  Logout: LogOut,
+  ArrowRight: ArrowBigRight,
+  Mail: Mail,
 };

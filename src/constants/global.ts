@@ -1,3 +1,5 @@
+import { easeOut } from 'framer-motion';
+
 export const genderOptions = [
   {
     label: 'Male',
@@ -133,3 +135,17 @@ export enum ExamType {
   FINAL = 'FINAL',
   MIDTERM = 'MIDTERM',
 }
+
+export const cardVariants = {
+  expand: {
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+export const itemVariants = {
+  scroll: { opacity: 0, y: 8, scale: 0.98 },
+  expand: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: easeOut } },
+};

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useEffect, useState, useRef } from 'react';
-import { BookOpenIcon, InfoIcon, LifeBuoyIcon } from 'lucide-react';
+import { BookOpenIcon, InfoIcon, LifeBuoyIcon, University } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 // Simple logo component for the navbar
 const Logo = (props: React.SVGAttributes<SVGElement>) => {
@@ -107,49 +108,19 @@ export interface Navbar02Props extends React.HTMLAttributes<HTMLElement> {
 
 // Default navigation links
 const defaultNavigationLinks: Navbar02NavItem[] = [
-  { href: '#', label: 'Home' },
+  { label: 'Universities' },
+
   {
-    label: 'Features',
-    submenu: true,
-    type: 'description',
-    items: [
-      {
-        href: '#components',
-        label: 'Components',
-        description: 'Browse all components in the library.',
-      },
-      {
-        href: '#documentation',
-        label: 'Documentation',
-        description: 'Learn how to use the library.',
-      },
-      {
-        href: '#templates',
-        label: 'Templates',
-        description: 'Pre-built layouts for common use cases.',
-      },
-    ],
+    label: 'Courses',
   },
   {
-    label: 'Pricing',
-    submenu: true,
-    type: 'simple',
-    items: [
-      { href: '#product-a', label: 'Product A' },
-      { href: '#product-b', label: 'Product B' },
-      { href: '#product-c', label: 'Product C' },
-      { href: '#product-d', label: 'Product D' },
-    ],
+    label: 'Community',
+  },
+  {
+    label: 'News',
   },
   {
     label: 'About',
-    submenu: true,
-    type: 'icon',
-    items: [
-      { href: '#getting-started', label: 'Getting Started', icon: 'BookOpenIcon' },
-      { href: '#tutorials', label: 'Tutorials', icon: 'LifeBuoyIcon' },
-      { href: '#about-us', label: 'About Us', icon: 'InfoIcon' },
-    ],
   },
 ];
 
@@ -162,8 +133,6 @@ export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
       navigationLinks = defaultNavigationLinks,
       signInText = 'Sign In',
       signInHref = '#signin',
-      ctaText = 'Get Started',
-      ctaHref = '#get-started',
       onSignInClick,
       onCtaClick,
       ...props
@@ -227,14 +196,14 @@ export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
       <header
         ref={combinedRef}
         className={cn(
-          'sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6 [&_*]:no-underline',
+          'shadow-2xl sticky top-0 z-50 w-full border-b bg-red-400 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6 [&_*]:no-underline',
           className
         )}
         {...props}
       >
-        <div className='container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4'>
+        <div className='container mx-auto flex h-20  items-center justify-between gap-4'>
           {/* Left side */}
-          <div className='flex items-center gap-2'>
+          <div className='order-2 md:order-1 flex items-center gap-2'>
             {/* Mobile menu trigger */}
             {isMobile && (
               <Popover>
@@ -299,13 +268,15 @@ export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
               </Popover>
             )}
             {/* Main nav */}
-            <div className='flex items-center gap-6'>
+            <div className='flex items-center gap-20'>
               <button
                 onClick={(e) => e.preventDefault()}
                 className='flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer'
               >
-                <div className='text-2xl'>{logo}</div>
-                <span className='hidden font-bold text-xl sm:inline-block'>shadcn.io</span>
+                <div className='text-2xl'>
+                  <University />
+                </div>
+                <span className='hidden font-bold text-xl sm:inline-block'>Takoya University</span>
               </button>
               {/* Navigation menu */}
               {!isMobile && (
@@ -404,28 +375,20 @@ export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
             </div>
           </div>
           {/* Right side */}
-          <div className='flex items-center gap-3'>
-            <Button
-              variant='ghost'
-              size='sm'
-              className='text-sm font-medium hover:bg-accent hover:text-accent-foreground'
-              onClick={(e) => {
-                e.preventDefault();
-                if (onSignInClick) onSignInClick();
-              }}
-            >
-              {signInText}
-            </Button>
-            <Button
-              size='sm'
-              className='text-sm font-medium px-4 h-9 rounded-md shadow-sm'
-              onClick={(e) => {
-                e.preventDefault();
-                if (onCtaClick) onCtaClick();
-              }}
-            >
-              {ctaText}
-            </Button>
+          <div className='order-1 md:order-2 flex items-center gap-3'>
+            <Link href='/login'>
+              <Button
+                variant='outline'
+                size='sm'
+                className='text-sm text-white font-medium bg-primary hover:bg-amber-500 hover:text-accent-foreground cursor-pointer'
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onSignInClick) onSignInClick();
+                }}
+              >
+                {signInText}
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
-import { getErrorMessageByPropertyName } from "@/utils/schema-validator";
-import { Input } from "antd";
-import { spawn } from "child_process";
-import { useFormContext, Controller } from "react-hook-form";
+import { getErrorMessageByPropertyName } from '@/utils/schema-validator';
+
+import { useFormContext, Controller } from 'react-hook-form';
 interface IInput {
   name: string;
   type?: string;
-  size?: "large" | "small";
+  size?: 'large' | 'small';
   value?: string | string[] | undefined;
   id?: string;
   placeholder?: string;
@@ -19,7 +18,7 @@ interface IInput {
 const FormInput = ({
   name,
   type,
-  size = "large",
+  size = 'large',
   value,
   id,
   placeholder,
@@ -39,7 +38,7 @@ const FormInput = ({
       {required ? (
         <span
           style={{
-            color: "red",
+            color: 'red',
           }}
         >
           *
@@ -50,18 +49,16 @@ const FormInput = ({
         control={control}
         name={name}
         render={({ field }) =>
-          type === "password" ? (
-            <Input.Password
+          type === 'password' ? (
+            <input
               type={type}
-              size={size}
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}
             />
           ) : (
-            <Input
+            <input
               type={type}
-              size={size}
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}
@@ -69,7 +66,7 @@ const FormInput = ({
           )
         }
       />
-      <small style={{ color: "red" }}>{errorMessage}</small>
+      <small style={{ color: 'red' }}>{errorMessage}</small>
     </>
   );
 };

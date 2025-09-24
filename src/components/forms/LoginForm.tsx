@@ -33,28 +33,33 @@ const LoginForm = () => {
 
   return (
     <div className='login-bg'>
-      <div className='min-h-screen flex justify-center items-center gap-10'>
+      <div className='min-h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 place-items-center'>
         <div>
           <Image src={loginImage} alt='Login-gif' width={500} />
         </div>
         <div>
-          <h1>First Login your account</h1>
+          <h1 className='mb-5'>First Login your account</h1>
           <div>
             <Form submitHandler={onSubmit}>
-              <div style={{ margin: '15px 0' }}>
-                <FormInput type='text' size='large' placeholder='ID' name='id' label='User Id' />
+              <div>
+                <FormInput type='text' size='large' placeholder='ID' name='id' label='ID' />
               </div>
-              <div style={{ margin: '15px 0' }}>
+              <div className='my-4'>
                 <FormInput
                   type='password'
                   size='large'
                   placeholder='Password'
                   name='password'
-                  label='User Password'
+                  label='Password'
                 />
               </div>
               <div>
-                <Button variant='outline'>Login</Button>
+                <Button
+                  variant='ghost'
+                  className='bg-slate-800 text-slate-200 w-full mx-w-sm hover:bg-slate-900 hover:text-white'
+                >
+                  Login
+                </Button>
               </div>
             </Form>
           </div>

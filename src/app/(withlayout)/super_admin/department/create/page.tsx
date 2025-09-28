@@ -1,43 +1,37 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
 import FormInput from '@/components/forms/FormInput';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
 import { useAddDepartmentMutation } from '@/redux/api/departmentApi';
-import { Button, Col, Row, message } from 'antd';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
+import Form from '@/components/forms/Form';
 
 const CreateDepartmentPage = () => {
-  const [addDepartment] = useAddDepartmentMutation();
+  const [addDepartment, { isLoading }] = useAddDepartmentMutation();
 
-  const onSubmit = async (data: any) => {
-    message.loading('Creating.....');
+  const onSubmit = async (data: { title: string }) => {
+    TuToastify('Creating...', 'promise');
     try {
-      console.log(data);
       await addDepartment(data);
-      message.success('Department added successfully');
+      TuToastify('Department added successfully!', 'success');
     } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+      TuToastify('Failed to create department', 'error');
     }
   };
-  const base = 'super_admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'department', link: `/${base}/department` },
-        ]}
-      />
-      <h1>Create Department</h1>
+    <div className='p-6 space-y-6 bg-gray-50 min-h-screen'>
+      {/* Page Title */}
+      <h1 className='text-2xl font-semibold'>Create Department</h1>
+
+      {/* Form */}
       <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <FormInput name='title' label='Title' />
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
+        <div className='flex flex-col gap-4'>
+          <FormInput name='title' label='Title' />
+        </div>
+
+        <Button type='submit' className='w-32' disabled={isLoading}>
+          {isLoading ? 'Adding...' : 'Add'}
         </Button>
       </Form>
     </div>

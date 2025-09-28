@@ -1,6 +1,6 @@
-import { Button } from 'antd';
+'use client';
 import Link from 'next/link';
-import React from 'react';
+import { Button } from './button';
 
 type ActionBarProps = {
   title?: string;
@@ -45,7 +45,7 @@ const ActionBar = ({ title, link, btnText }: ActionBarProps) => {
     <>
       <h1>{title}</h1>
       <Link href={link}>
-        <Button type='primary'>{btnText}</Button>
+        <Button variant='default'>{btnText}</Button>
       </Link>
     </>
   );

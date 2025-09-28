@@ -1,7 +1,5 @@
 'use client';
 import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-
 import Link from 'next/link';
 
 import { useState } from 'react';
@@ -15,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { TuToastify } from '@/lib/reactToastify';
 
 const AdminPage = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, string | number> = {};
   const [deleteAdmin] = useDeleteAdminMutation();
 
   const [page, setPage] = useState<number>(1);
@@ -76,7 +74,7 @@ const AdminPage = () => {
     {
       title: 'Created at',
       dataIndex: 'createdAt',
-      render: function (data: any) {
+      render: function (data: string) {
         return data && dayjs(data).format('MMM D, YYYY hh:mm A');
       },
       sorter: true,
@@ -88,8 +86,7 @@ const AdminPage = () => {
     {
       title: 'Action',
       dataIndex: 'id',
-      render: function (data: any) {
-        // console.log(data);
+      render: function (data: string) {
         return (
           <>
             <Link href={`/super_admin/admin/details/${data}`}>
@@ -124,12 +121,6 @@ const AdminPage = () => {
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
-    const { order, field } = sorter;
-    // console.log(order, field);
-    setSortBy(field as string);
-    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
-  };
 
   const resetFilters = () => {
     setSortBy('');
@@ -138,28 +129,20 @@ const AdminPage = () => {
   };
 
   const deleteAdminHandler = async (id: string) => {
-    // console.log(id);
     try {
       const res = await deleteAdmin(id);
       if (res) {
         TuToastify('Admin Successfully Deleted!', 'success');
         setOpen(false);
       }
-    } catch (error: any) {
-      TuToastify(error.message, 'error');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
 
   return (
     <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: 'super_admin',
-            link: '/super_admin',
-          },
-        ]}
-      />
       <ActionBar
         title='Admin List'
         link={actionBarObj.admin.link}
@@ -185,13 +168,12 @@ const AdminPage = () => {
 
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={admins}
+        columns={columns as []}
+        dataSource={admins as []}
         pageSize={size}
-        totalPages={meta?.total}
+        totalRecords={meta?.total}
         showSizeChanger={true}
         onPaginationChange={onPaginationChange}
-        onTableChange={onTableChange}
         showPagination={true}
       />
 

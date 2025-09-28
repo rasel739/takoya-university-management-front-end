@@ -1,40 +1,43 @@
-import { Col, Row } from 'antd';
+'use client';
+
+import React from 'react';
 import FormInput from '../forms/FormInput';
 
-const LocalGuardianInfo = () => {
+const LocalGuardianInfo: React.FC = () => {
   return (
-    <>
-      <div
-        style={{
-          border: '1px solid #d9d9d9',
-          borderRadius: '5px',
-          padding: '15px',
-          marginBottom: '10px',
-          marginTop: '10px',
-        }}
-      >
-        <p style={{ fontSize: '18px', fontWeight: '500', margin: '5px 0px' }}>
-          Guardian information
-        </p>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.localGuardian.name' label='Local guardian name' />
-          </Col>
+    <section className='border border-gray-200 rounded-md p-4 my-3'>
+      <h3 className='text-lg font-medium mb-4'>Local Guardian Information</h3>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.localGuardian.occupation' label='Local guardian occupation' />
-          </Col>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+        <div>
+          <FormInput name='student.localGuardian.name' label='Local guardian name' size='large' />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.localGuardian.contactNo' label='Local guardian contact no.' />
-          </Col>
+        <div>
+          <FormInput
+            name='student.localGuardian.occupation'
+            label='Local guardian occupation'
+            size='large'
+          />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.localGuardian.address' label='Local guardian address' />
-          </Col>
-        </Row>
+        <div>
+          <FormInput
+            name='student.localGuardian.contactNo'
+            label='Local guardian contact no.'
+            size='large'
+          />
+        </div>
+
+        <div>
+          <FormInput
+            name='student.localGuardian.address'
+            label='Local guardian address'
+            size='large'
+          />
+        </div>
       </div>
-    </>
+    </section>
   );
 };
 

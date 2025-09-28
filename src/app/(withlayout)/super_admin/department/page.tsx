@@ -1,14 +1,16 @@
 'use client';
-import { DeleteOutlined, EditOutlined, EyeOutlined, ReloadOutlined } from '@ant-design/icons';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-import UMTable from '@/components/ui/UMTable';
-import { useDeleteDepartmentMutation, useDepartmentsQuery } from '@/redux/api/departmentApi';
-import { Button, Input, message } from 'antd';
-import Link from 'next/link';
+
 import { useState } from 'react';
-import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
-import { useDebounced } from '@/redux/hooks';
+import Link from 'next/link';
 import dayjs from 'dayjs';
+import UMTable from '@/components/ui/UMTable';
+import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
+import { useDepartmentsQuery, useDeleteDepartmentMutation } from '@/redux/api/departmentApi';
+import { useDebounced } from '@/redux/hooks';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Trash2, Edit2, RefreshCw } from 'lucide-react';
+import { TuToastify } from '@/lib/reactToastify';
 
 const ManageDepartmentPage = () => {
   const query: Record<string, any> = {};
@@ -24,82 +26,62 @@ const ManageDepartmentPage = () => {
   query['page'] = page;
   query['sortBy'] = sortBy;
   query['sortOrder'] = sortOrder;
-  // query["searchTerm"] = searchTerm;
 
-  const debouncedTerm = useDebounced({
-    searchQuery: searchTerm,
-    delay: 600,
-  });
+  const debouncedTerm = useDebounced({ searchQuery: searchTerm, delay: 600 });
+  if (!!debouncedTerm) query['searchTerm'] = debouncedTerm;
 
-  if (!!debouncedTerm) {
-    query['searchTerm'] = debouncedTerm;
-  }
   const { data, isLoading } = useDepartmentsQuery({ ...query });
-
   const departments = data?.departments;
-  const meta = data?.meta;
+  // const meta = data?.meta;
 
-  const deleteHandler = async (id: string) => {
-    message.loading('Deleting.....');
+  const handleDelete = async (id: string) => {
+    TuToastify('Deleting department...', 'error');
     try {
-      //   console.log(data);
       await deleteDepartment(id);
-      message.success('Department Deleted successfully');
+      TuToastify('Department deleted successfully!', 'success');
     } catch (err: any) {
-      //   console.error(err.message);
-      message.error(err.message);
+      TuToastify('Failed to delete', 'warning');
     }
   };
 
   const columns = [
+    { title: 'Title', key: 'title', dataIndex: 'title' },
     {
-      title: 'Title',
-      dataIndex: 'title',
-    },
-    {
-      title: 'CreatedAt',
+      title: 'Created At',
+      key: 'createdAt',
       dataIndex: 'createdAt',
-      render: function (data: any) {
-        return data && dayjs(data).format('MMM D, YYYY hh:mm A');
-      },
+      render: (value: string, record: any, index: number) =>
+        value && dayjs(value).format('MMM D, YYYY hh:mm A'),
       sorter: true,
     },
     {
-      title: 'Action',
-      render: function (data: any) {
-        return (
-          <>
-            <Link href={`/super_admin/department/edit/${data?.id}`}>
-              <Button
-                style={{
-                  margin: '0px 5px',
-                }}
-                onClick={() => console.log(data)}
-                type='primary'
-              >
-                <EditOutlined />
-              </Button>
-            </Link>
-            <Button onClick={() => deleteHandler(data?.id)} type='primary' danger>
-              <DeleteOutlined />
+      title: 'Actions',
+      key: 'actions',
+      render: (data: any) => (
+        <div className='flex gap-2'>
+          <Link href={`/super_admin/department/edit/${data?.id}`}>
+            <Button variant='outline' size='sm'>
+              <Edit2 className='w-4 h-4' />
             </Button>
-          </>
-        );
-      },
+          </Link>
+          <Button variant='destructive' size='sm' onClick={() => handleDelete(data?.id)}>
+            <Trash2 className='w-4 h-4' />
+          </Button>
+        </div>
+      ),
     },
   ];
 
   const onPaginationChange = (page: number, pageSize: number) => {
-    console.log('Page:', page, 'PageSize:', pageSize);
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
-    const { order, field } = sorter;
-    // console.log(order, field);
-    setSortBy(field as string);
-    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
-  };
+
+  // const onTableChange = (pagination: any, filter: any, sorter: any) => {
+  //   const { order, field } = sorter;
+  //   setSortBy(field);
+  //   setSortOrder(order === 'ascend' ? 'asc' : 'desc');
+  // };
 
   const resetFilters = () => {
     setSortBy('');
@@ -108,49 +90,37 @@ const ManageDepartmentPage = () => {
   };
 
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: 'super_admin',
-            link: '/super_admin',
-          },
-        ]}
-      />
-
+    <div className='p-6 space-y-6 bg-gray-50 min-h-screen'>
       <ActionBar title='Department List' link={actionBarObj.department.link} />
-      <Input
-        type='text'
-        size='large'
-        placeholder='Search...'
-        style={{
-          width: '20%',
-        }}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-        }}
-      />
-      <div>
-        <Link href='/super_admin/department/create'>
-          <Button type='primary'>Create</Button>
-        </Link>
-        {(!!sortBy || !!sortOrder || !!searchTerm) && (
-          <Button onClick={resetFilters} type='primary' style={{ margin: '0px 5px' }}>
-            <ReloadOutlined />
-          </Button>
-        )}
+
+      <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
+        <Input
+          type='text'
+          placeholder='Search...'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className='max-w-xs'
+        />
+        <div className='flex gap-2'>
+          <Link href='/super_admin/department/create'>
+            <Button>Create</Button>
+          </Link>
+          {(!!sortBy || !!sortOrder || !!searchTerm) && (
+            <Button onClick={resetFilters} variant='outline'>
+              <RefreshCw className='w-4 h-4' />
+            </Button>
+          )}
+        </div>
       </div>
 
       <UMTable
         loading={isLoading}
         columns={columns}
-        dataSource={departments}
+        dataSource={Array.isArray(departments) ? departments : []}
         pageSize={size}
-        totalPages={meta?.total}
-        showSizeChanger={true}
+        showSizeChanger
         onPaginationChange={onPaginationChange}
-        onTableChange={onTableChange}
-        showPagination={true}
+        showPagination
       />
     </div>
   );

@@ -30,8 +30,8 @@ const FormInput = ({ name, type, value, placeholder, label, required }: IInput) 
 
   return (
     <>
-      {required ? <span className='text-red-500'>*</span> : null}
       {label ? label : null}
+      {required ? <span className='text-red-500 ml-0.5'>*</span> : null}
       <Controller
         control={control}
         name={name}

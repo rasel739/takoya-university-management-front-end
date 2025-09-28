@@ -1,38 +1,68 @@
-import { Modal } from "antd";
-import { ReactElement, ReactNode } from "react";
+'use client';
 
-interface IModal {
+import * as React from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
+interface UMModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  title: string | ReactNode;
-  children: ReactElement;
+  title: string | React.ReactNode;
+  children: React.ReactNode;
   handleOk?: () => void;
   showCancelButton?: boolean;
   showOkButton?: boolean;
+  okText?: string;
+  cancelText?: string;
 }
 
-const UMModal = ({
+const UMModal: React.FC<UMModalProps> = ({
   isOpen,
   closeModal,
   title,
   children,
-  handleOk,
   showCancelButton = true,
   showOkButton = true,
-}: IModal) => {
+  okText = 'Ok',
+  cancelText = 'Cancel',
+}) => {
   return (
-    <Modal
-      title={title}
-      open={isOpen}
-      onOk={handleOk}
-      onCancel={closeModal}
-      cancelButtonProps={{
-        style: { display: showCancelButton ? "inline" : "none" },
-      }}
-      okButtonProps={{ style: { display: showOkButton ? "inline" : "none" } }}
-    >
-      {children}
-    </Modal>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && closeModal()}>
+      <DialogContent className='sm:max-w-lg'>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          {/* Optional description, remove if not needed */}
+          {/* <DialogDescription>Optional description here</DialogDescription> */}
+        </DialogHeader>
+
+        <div className='mt-2'>{children}</div>
+
+        {(showCancelButton || showOkButton) && (
+          <DialogFooter className='mt-4 flex justify-end gap-2'>
+            {showCancelButton && (
+              <Button variant='outline' onClick={closeModal}>
+                {cancelText}
+              </Button>
+            )}
+            {showOkButton && (
+              <Button
+                onClick={() => {
+                  closeModal();
+                }}
+              >
+                {okText}
+              </Button>
+            )}
+          </DialogFooter>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
 

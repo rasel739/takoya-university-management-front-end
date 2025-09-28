@@ -38,8 +38,10 @@ export default function RootLayout({
         theme='light'
         transition={Flip}
       />
-      <html lang='en'>
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <html lang='en' suppressHydrationWarning>
+        <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+          {children}
+        </body>
       </html>
     </Providers>
   );

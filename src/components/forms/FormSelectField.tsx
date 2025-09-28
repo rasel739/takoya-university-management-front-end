@@ -1,7 +1,14 @@
-"use client";
-
-import { Select } from "antd";
-import { useFormContext, Controller } from "react-hook-form";
+'use client';
+import { useFormContext, Controller } from 'react-hook-form';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 export type SelectOptions = {
   label: string;
@@ -11,7 +18,7 @@ export type SelectOptions = {
 type SelectFieldProps = {
   options: SelectOptions[];
   name: string;
-  size?: "large" | "small";
+  size?: 'large' | 'small';
   value?: string | string[] | undefined;
   placeholder?: string;
   label?: string;
@@ -19,16 +26,7 @@ type SelectFieldProps = {
   handleChange?: (el: string) => void;
 };
 
-const FormSelectField = ({
-  name,
-  size = "large",
-  value,
-  placeholder = "select",
-  options,
-  label,
-  defaultValue,
-  handleChange,
-}: SelectFieldProps) => {
+const FormSelectField = ({ name, options, label, handleChange }: SelectFieldProps) => {
   const { control } = useFormContext();
 
   return (
@@ -38,14 +36,36 @@ const FormSelectField = ({
         control={control}
         name={name}
         render={({ field: { value, onChange } }) => (
-          <Select
-            onChange={handleChange ? handleChange : onChange}
-            size={size}
-            options={options}
-            value={value}
-            style={{ width: "100%" }}
-            placeholder={placeholder}
-          />
+          <div
+            className='flex justify-center self-start pt-6 w-full'
+            style={{
+              all: 'revert',
+              display: 'flex',
+              justifyContent: 'center',
+              alignSelf: 'flex-start',
+              paddingTop: '1.5rem',
+              width: '100%',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              letterSpacing: 'normal',
+            }}
+          >
+            <Select onValueChange={handleChange ? handleChange : onChange} value={value}>
+              <SelectTrigger className='w-[180px]'>
+                <SelectValue placeholder='Select' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Select</SelectLabel>
+                  {options?.map((select) => (
+                    <>
+                      <SelectItem value={select.value}>{select.label}</SelectItem>
+                    </>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         )}
       />
     </>

@@ -14,6 +14,7 @@ type FormProps<T extends FieldValues> = {
   submitHandler: SubmitHandler<T>;
   options?: UseFormProps<T>;
   resolver?: Resolver<T>;
+  defaultValues?: import('react-hook-form').DefaultValues<T>;
 };
 
 const Form = <T extends FieldValues>({
@@ -21,11 +22,17 @@ const Form = <T extends FieldValues>({
   submitHandler,
   options,
   resolver,
+  defaultValues,
 }: FormProps<T>) => {
-  const methods = useForm<T>({ ...options, resolver });
+  const methods = useForm<T>({
+    ...options,
+    resolver,
+    defaultValues,
+  });
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(submitHandler)} noValidate>
+      <form onSubmit={methods.handleSubmit(submitHandler as SubmitHandler<FieldValues>)} noValidate>
         {children}
       </form>
     </FormProvider>

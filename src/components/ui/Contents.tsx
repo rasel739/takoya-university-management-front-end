@@ -1,40 +1,50 @@
-import { Content } from 'antd/es/layout/layout';
+'use client';
+
+import React, { useMemo } from 'react';
 import TUBreadCrumb from './TUBreadCrumb';
-import Header from './Header';
 import { getUserInfo } from '@/service/auth.service';
 import { usePathname } from 'next/navigation';
 
-const Contents: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { role } = getUserInfo() as { role: string };
-  const pathname = usePathname();
+function formatSegment(seg?: string) {
+  if (!seg) return '';
+  try {
+    const decoded = decodeURIComponent(seg);
+    return decoded.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  } catch {
+    return seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+}
 
-  return (
-    <Content style={{ minHeight: '100vh', color: 'black' }}>
-      <Header />
-      <TUBreadCrumb
-        items={[
-          {
-            title: `${role?.split('_')?.join(' ')}`,
-            href: `/${role}`,
-          },
-          {
-            title: pathname.split('/')[2]
-              ? `${pathname?.split('/')[2]?.split('-')?.join(' ')}`
-              : '',
-            href: pathname?.split('/')[3]
-              ? `/${role}${pathname?.split('/')[3] ? '/' : ''}${pathname?.split('/')[2]}`
-              : '',
-          },
-          {
-            title: pathname.split('/')[3]
-              ? `${pathname?.split('/')[3]?.split('-')?.join(' ')}`
-              : '',
-          },
-        ]}
-      />
-      {children}
-    </Content>
-  );
+const Contents = () => {
+  const user = (typeof window !== 'undefined' && getUserInfo && getUserInfo()) || {};
+  const roleRaw = (user as any)?.role ?? '';
+  const pathname = usePathname() ?? '/';
+
+  const crumbs = useMemo(() => {
+    const segments = pathname.split('/').filter(Boolean);
+    const items: { title: string; href?: string }[] = [];
+
+    if (roleRaw) {
+      if (segments[0] === roleRaw) {
+        items.push({ title: formatSegment(roleRaw), href: `/${roleRaw}` });
+      } else {
+        items.push({ title: formatSegment(roleRaw), href: `/${roleRaw}` });
+      }
+    }
+
+    const startIndex = segments[0] === roleRaw ? 1 : 0;
+
+    for (let i = startIndex; i < segments.length; i++) {
+      const segTitle = formatSegment(segments[i]);
+      const pathParts = segments.slice(startIndex, i + 1);
+      const href = roleRaw ? `/${roleRaw}/${pathParts.join('/')}` : `/${pathParts.join('/')}`;
+      items.push({ title: segTitle, href });
+    }
+
+    return items;
+  }, [pathname, roleRaw]);
+
+  return <TUBreadCrumb items={crumbs} />;
 };
 
 export default Contents;

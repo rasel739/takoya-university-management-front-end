@@ -1,63 +1,55 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
+import Title from '@/app/components/common/Title';
+
 import FormInput from '@/components/forms/FormInput';
-import ActionBar from '@/components/ui/ActionBar';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-import { useDepartmentQuery, useUpdateDepartmentMutation } from '@/redux/api/departmentApi';
-import { Button, Col, Row, message } from 'antd';
+
+import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
+import { useUpdateDepartmentMutation } from '@/redux/api/departmentApi';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
+import Form from '@/components/forms/Form';
 
 type IDProps = {
-  params: any;
+  params: { id: string };
 };
 
 const EditDepartmentPage = ({ params }: IDProps) => {
   const { id } = params;
 
-  const { data, isLoading } = useDepartmentQuery(id);
-  const [updateDepartment] = useUpdateDepartmentMutation();
+  // const { data, isLoading } = useDepartmentQuery(id);
+  const [updateDepartment, { isLoading: isUpdating }] = useUpdateDepartmentMutation();
 
   const onSubmit = async (values: { title: string }) => {
-    message.loading('Updating.....');
+    TuToastify('Updating...', 'loading');
     try {
-      //   console.log(data);
       await updateDepartment({ id, body: values });
-      message.success('Department updated successfully');
+      TuToastify('Department updated successfully!', 'success');
     } catch (err: any) {
-      //   console.error(err.message);
-      message.error(err.message);
+      TuToastify('Update failed', 'error');
     }
   };
 
-  // @ts-ignore
-  const defaultValues = {
-    title: data?.title || '',
-  };
+  // const defaultValues = {
+  //   title: data?.title || '',
+  // };
 
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: 'super_admin',
-            link: '/super_admin',
-          },
-          {
-            label: 'department',
-            link: '/super_admin/department',
-          },
-        ]}
-      />
+    <div className='p-6 space-y-6 bg-gray-50 min-h-screen'>
+      {/* Page Title */}
+      <Title title='Update Department' />
 
-      <ActionBar title='Update Department'> </ActionBar>
-      <Form submitHandler={onSubmit} defaultValues={defaultValues}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <FormInput name='title' label='Title' />
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          Update
+      {/* Action Bar (optional) */}
+      <ActionBar title='Edit Department' link={actionBarObj.department.link} />
+
+      {/* Form */}
+      <Form submitHandler={onSubmit}>
+        <div className='flex flex-col gap-4'>
+          <FormInput name='title' label='Title' />
+        </div>
+
+        <Button type='submit' className='w-32' disabled={isUpdating}>
+          {isUpdating ? 'Updating...' : 'Update'}
         </Button>
       </Form>
     </div>

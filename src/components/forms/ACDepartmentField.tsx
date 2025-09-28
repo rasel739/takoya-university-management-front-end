@@ -1,5 +1,5 @@
-import { useAcademicDepartmentsQuery } from "@/redux/api/academic/departmentApi";
-import FormSelectField, { SelectOptions } from "./FormSelectField";
+import { useAcademicDepartmentsQuery } from '@/redux/api/academic/departmentApi';
+import FormSelectField, { SelectOptions } from './FormSelectField';
 
 type ACDepartmentFieldProps = {
   name: string;
@@ -7,12 +7,17 @@ type ACDepartmentFieldProps = {
 };
 
 const ACDepartmentField = ({ name, label }: ACDepartmentFieldProps) => {
-  const { data, isLoading } = useAcademicDepartmentsQuery({
+  const { data } = useAcademicDepartmentsQuery({
     limit: 100,
     page: 1,
   });
   const academicDepartments = data?.academicDepartments;
-  const acDepartmentOptions = academicDepartments?.map((acDepartment: any) => {
+  interface AcademicDepartment {
+    id: string;
+    title: string;
+  }
+
+  const acDepartmentOptions = academicDepartments?.map((acDepartment: AcademicDepartment) => {
     console.log(acDepartment?.id);
     return {
       label: acDepartment?.title,
@@ -21,11 +26,7 @@ const ACDepartmentField = ({ name, label }: ACDepartmentFieldProps) => {
   });
 
   return (
-    <FormSelectField
-      name={name}
-      label={label}
-      options={acDepartmentOptions as SelectOptions[]}
-    />
+    <FormSelectField name={name} label={label} options={acDepartmentOptions as SelectOptions[]} />
   );
 };
 

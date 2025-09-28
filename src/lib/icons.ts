@@ -6,6 +6,8 @@ import {
   ChartNoAxesGantt,
   CircleUser,
   createLucideIcon,
+  Eye,
+  EyeOff,
   Home,
   LogOut,
   Mail,
@@ -40,4 +42,6 @@ export const Icons = {
   Logout: LogOut,
   ArrowRight: ArrowBigRight,
   Mail: Mail,
+  Eye: Eye,
+  EyeOff: EyeOff,
 };

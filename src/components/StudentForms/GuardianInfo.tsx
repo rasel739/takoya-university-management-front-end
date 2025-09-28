@@ -1,68 +1,58 @@
-import { Col, Row } from 'antd';
+'use client';
+
+import React from 'react';
 import FormInput from '../forms/FormInput';
 
-const GuardianInfo = () => {
+const GuardianInfo: React.FC = () => {
   return (
-    <>
-      <div
-        style={{
-          border: '1px solid #d9d9d9',
-          borderRadius: '5px',
-          padding: '15px',
-          marginBottom: '10px',
-          marginTop: '10px',
-        }}
-      >
-        <p style={{ fontSize: '18px', fontWeight: '500', margin: '5px 0px' }}>
-          Guardian information
-        </p>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.guardian.fatherName' label='Father name' size='large' />
-          </Col>
+    <section className='border border-gray-200 rounded-md p-4 my-3'>
+      <h3 className='text-lg font-medium mb-4'>Guardian information</h3>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+        <div>
+          <FormInput name='student.guardian.fatherName' label='Father name' size='large' />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput
-              name='student.guardian.fatherOccupation'
-              label='Father occupation'
-              size='large'
-            />
-          </Col>
+        <div>
+          <FormInput
+            name='student.guardian.fatherOccupation'
+            label='Father occupation'
+            size='large'
+          />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput
-              name='student.guardian.fatherContactNo'
-              label='Father contact no.'
-              size='large'
-            />
-          </Col>
+        <div>
+          <FormInput
+            name='student.guardian.fatherContactNo'
+            label='Father contact no.'
+            size='large'
+          />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.guardian.motherName' label='Mother name' size='large' />
-          </Col>
+        <div>
+          <FormInput name='student.guardian.motherName' label='Mother name' size='large' />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput
-              name='student.guardian.motherOccupation'
-              label='Mother occupation'
-              size='large'
-            />
-          </Col>
+        <div>
+          <FormInput
+            name='student.guardian.motherOccupation'
+            label='Mother occupation'
+            size='large'
+          />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput
-              name='student.guardian.motherContactNo'
-              label='Mother contact no.'
-              size='large'
-            />
-          </Col>
+        <div>
+          <FormInput
+            name='student.guardian.motherContactNo'
+            label='Mother contact no.'
+            size='large'
+          />
+        </div>
 
-          <Col span={6} style={{ margin: '10px 0' }}>
-            <FormInput name='student.guardian.address' label='Address' size='large' />
-          </Col>
-        </Row>
+        <div className='xl:col-span-4 lg:col-span-3 sm:col-span-2'>
+          <FormInput name='student.guardian.address' label='Address' size='large' />
+        </div>
       </div>
-    </>
+    </section>
   );
 };
 

@@ -2,31 +2,31 @@
 
 import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
-import { Button } from 'antd';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
 
 const ResetPassPage = () => {
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: { oldPassword: string; newPassword: string }) => {
     try {
       console.log(data);
-    } catch (error) {
-      console.error(error);
+      TuToastify('Password reset successfully!', 'success');
+    } catch {
+      TuToastify('Failed to reset password', 'error');
     }
   };
 
   return (
-    <div style={{ margin: '100px 0', display: 'flex', justifyContent: 'center' }}>
-      <Form submitHandler={onSubmit}>
-        <h3 style={{ marginBottom: '10px' }}>Reset Password</h3>
-        <div style={{ margin: '5px 0' }}>
-          <FormInput name='oldPassword' label='Old password' type='password' />
-        </div>
-        <div style={{ margin: '5px 0' }}>
-          <FormInput name='newPassword' label='New password' type='password' />
-        </div>
-        <Button type='primary' htmlType='submit'>
-          submit
-        </Button>
-      </Form>
+    <div className='min-h-screen flex items-center justify-center bg-gray-50 p-4'>
+      <div className='bg-white p-8 rounded-lg shadow-md w-full max-w-md'>
+        <h2 className='text-2xl font-semibold mb-6 text-center'>Reset Password</h2>
+        <Form submitHandler={onSubmit}>
+          <FormInput name='oldPassword' label='Old Password' type='password' />
+          <FormInput name='newPassword' label='New Password' type='password' />
+          <Button type='submit' className='w-full mt-4'>
+            Change
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 };

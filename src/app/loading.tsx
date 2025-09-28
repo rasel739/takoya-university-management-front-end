@@ -79,7 +79,7 @@ const Loading = () => {
           stroke-width='24'
         ></line>
       </svg>
-      <span className='text-4xl font-medium text-gray-500'>Loading...</span>
+      <span className='text-4xl font-medium text-gray-500'>Thinking...</span>
     </div>
   );
 };

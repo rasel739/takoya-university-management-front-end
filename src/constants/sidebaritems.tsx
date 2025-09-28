@@ -1,19 +1,17 @@
-import type { MenuProps } from 'antd';
 import Link from 'next/link';
 import { USER_ROLE } from './role';
-import { ItemType } from 'antd/es/menu/interface';
 import { Icons } from '@/lib/icons';
 
 export const sidebaritems = (role: string) => {
   const iconProps = { color: 'rgb(255, 0, 255)', size: '1.5rem' };
 
-  const sideBarLink = (label: string, path: string, icon?: React.ReactNode): ItemType => ({
+  const sideBarLink = (label: string, path: string, icon?: React.ReactNode) => ({
     label: <Link href={path}>{label}</Link>,
     key: path,
     ...(icon && { icon }),
   });
 
-  const defaultSidebarItems: MenuProps['items'] = [
+  const defaultSidebarItems = [
     {
       label: 'Profile',
       key: `profile`,
@@ -25,7 +23,7 @@ export const sidebaritems = (role: string) => {
     },
   ];
 
-  const commonAdminSidebarItems: MenuProps['items'] = [
+  const commonAdminSidebarItems = [
     sideBarLink(
       'Manage Student',
       `/${role}/manage-student`,
@@ -38,7 +36,7 @@ export const sidebaritems = (role: string) => {
     ),
   ];
 
-  const adminSidebarItems: MenuProps['items'] = [
+  const adminSidebarItems = [
     ...defaultSidebarItems,
     ...commonAdminSidebarItems,
     {
@@ -67,20 +65,11 @@ export const sidebaritems = (role: string) => {
     },
   ];
 
-  const superAdminSidebarItems: MenuProps['items'] = [
+  const superAdminSidebarItems = [
     ...defaultSidebarItems,
     ...commonAdminSidebarItems,
     sideBarLink('Manage Admin', `/${role}/admin`, <Icons.ManageAdmin {...iconProps} />),
     sideBarLink('Manage User', `/${role}/user`, <Icons.ManageUser {...iconProps} />),
-    {
-      label: 'Manage Permissions',
-      key: 'manage-permissions',
-      icon: <Icons.ManagePermissions {...iconProps} />,
-      children: [
-        sideBarLink('Roles', `/${role}/permissions/roles`),
-        sideBarLink('Permissions', `/${role}/permissions/permissions`),
-      ],
-    },
     {
       label: 'Management',
       key: 'management',
@@ -89,12 +78,12 @@ export const sidebaritems = (role: string) => {
     },
   ];
 
-  const facultySidebarItems: MenuProps['items'] = [
+  const facultySidebarItems = [
     ...defaultSidebarItems,
     sideBarLink('Courses', `/${role}/courses`, <Icons.FacultyCourse {...iconProps} />),
   ];
 
-  const studentSidebarItems: MenuProps['items'] = [
+  const studentSidebarItems = [
     ...defaultSidebarItems,
     sideBarLink('Courses', `/${role}/courses`, <Icons.StudentCourse {...iconProps} />),
     sideBarLink(

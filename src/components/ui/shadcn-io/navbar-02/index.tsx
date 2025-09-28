@@ -380,11 +380,8 @@ export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
               <Button
                 variant='outline'
                 size='sm'
+                type='button'
                 className='text-sm text-white font-medium bg-primary hover:bg-amber-500 hover:text-accent-foreground cursor-pointer'
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (onSignInClick) onSignInClick();
-                }}
               >
                 {signInText}
               </Button>

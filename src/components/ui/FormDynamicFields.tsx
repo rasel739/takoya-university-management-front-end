@@ -1,13 +1,13 @@
 'use client';
 
-import { Button, Col, Empty, Row } from 'antd';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import FormSelectField from '../../../../university-management-frontend/src/components/Forms/FormSelectField';
+import { Button } from './button';
 import { daysOptions } from '@/constants/global';
-import FormTimePicker from '../../../../university-management-frontend/src/components/Forms/FormTimePicker';
-import BuildingOptions from '../../../../university-management-frontend/src/components/Forms/BuildingField';
-import RoomOptions from '../../../../university-management-frontend/src/components/Forms/RoomField';
-import CoreFacultyField from '../../../../university-management-frontend/src/components/Forms/CoreFacultyField';
+import FormSelectField from '../forms/FormSelectField';
+import FormTimePicker from '../forms/FormTimePicker';
+import CoreFacultyField from '../forms/CoreFacultyField';
+import BuildingField from '../forms/BuildingField';
+import RoomField from '../forms/RoomField';
 
 const FormDynamicFields = () => {
   const { control } = useFormContext();
@@ -32,42 +32,41 @@ const FormDynamicFields = () => {
                   borderRadius: '5px',
                 }}
               >
-                <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-                  <Col span={8}>
+                <div className='grid grid-cols-12 gap-4'>
+                  <div className='col-span-12 md:col-span-4'>
                     <FormSelectField
                       options={daysOptions}
                       name={`classSchedules.${index}.dayOfWeek`}
                       label='Day of week'
                     />
-                  </Col>
-                  <Col span={8}>
+                  </div>
+                  <div className='col-span-12 md:col-span-4'>
                     <div>
                       <FormTimePicker
                         name={`classSchedules.${index}.startTime`}
                         label='Start time'
                       />
                     </div>
-                  </Col>
-                  <Col span={8}>
+                  </div>
+                  <div className='col-span-12 md:col-span-4'>
                     <div>
                       <FormTimePicker name={`classSchedules.${index}.endTime`} label='End time' />
                     </div>
-                  </Col>
-                  <Col span={8} style={{ margin: '10px 0px' }}>
-                    <BuildingOptions />
-                  </Col>
-                  <Col span={8} style={{ margin: '10px 0px' }}>
-                    <RoomOptions name={`classSchedules.${index}.roomId`} />
-                  </Col>
-                  <Col span={8} style={{ margin: '10px 0px' }}>
+                  </div>
+                  <div className='col-span-12 md:col-span-4'>
+                    <BuildingField />
+                  </div>
+                  <div className='col-span-12 md:col-span-4'>
+                    <RoomField name={`classSchedules.${index}.roomId`} />
+                  </div>
+                  <div className='col-span-12 md:col-span-4'>
                     <CoreFacultyField name={`classSchedules.${index}.facultyId`} />
-                  </Col>
-                </Row>
+                  </div>
+                </div>
 
                 <Button
-                  type='primary'
+                  variant='destructive'
                   onClick={() => remove(index)}
-                  danger
                   style={{ margin: '5px 0px' }}
                 >
                   Delete
@@ -76,7 +75,7 @@ const FormDynamicFields = () => {
             );
           })
         ) : (
-          <Empty description='No class schedule found' />
+          <p>No Schedule. Please add one.</p>
         )}
       </div>
       <div
@@ -84,7 +83,7 @@ const FormDynamicFields = () => {
           textAlign: 'center',
         }}
       >
-        <Button type='primary' onClick={() => append(undefined)}>
+        <Button variant='default' onClick={() => append(undefined)}>
           Add Schedule
         </Button>
       </div>

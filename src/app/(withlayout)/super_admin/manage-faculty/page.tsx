@@ -1,124 +1,90 @@
 'use client';
-import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-import { Button, Input } from 'antd';
-import Link from 'next/link';
-import { DeleteOutlined, EditOutlined, ReloadOutlined, EyeOutlined } from '@ant-design/icons';
+
 import { useState } from 'react';
-import { useDebounced } from '@/redux/hooks';
-import UMTable from '@/components/ui/UMTable';
-import { IDepartment } from '@/types';
+import Link from 'next/link';
 import dayjs from 'dayjs';
+
+import UMTable from '@/components/ui/UMTable';
+import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
 import { useFacultiesQuery } from '@/redux/api/facultyApi';
+import { useDebounced } from '@/redux/hooks';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Icons } from '@/lib/icons';
+import { Edit, RefreshCcw, Trash } from 'lucide-react';
 
 const FacultyPage = () => {
-  const query: Record<string, any> = {};
-
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  query['limit'] = size;
-  query['page'] = page;
-  query['sortBy'] = sortBy;
-  query['sortOrder'] = sortOrder;
+  const query: Record<string, any> = {
+    limit: size,
+    page,
+    sortBy,
+    sortOrder,
+  };
 
-  const debouncedSearchTerm = useDebounced({
-    searchQuery: searchTerm,
-    delay: 600,
-  });
+  const debouncedSearchTerm = useDebounced({ searchQuery: searchTerm, delay: 600 });
+  if (debouncedSearchTerm) query['searchTerm'] = debouncedSearchTerm;
 
-  if (!!debouncedSearchTerm) {
-    query['searchTerm'] = debouncedSearchTerm;
-  }
   const { data, isLoading } = useFacultiesQuery({ ...query });
-
-  const faculties = data?.faculties;
+  const faculties = data?.faculties ?? [];
   const meta = data?.meta;
-  console.log(faculties);
 
   const columns = [
-    {
-      title: 'Id',
-      dataIndex: 'facultyId',
-      sorter: true,
-    },
+    { title: 'Id', dataIndex: 'facultyId', sorter: true },
     {
       title: 'Name',
-      render: function (data: Record<string, string>) {
-        const fullName = `${data?.firstName} ${data?.middleName} ${data?.lastName}`;
-        return <>{fullName}</>;
-      },
+      render: (row: any) => `${row.firstName} ${row.middleName || ''} ${row.lastName}`,
     },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-    },
+    { title: 'Email', dataIndex: 'email' },
     {
       title: 'Department',
       dataIndex: 'academicDepartment',
-      render: function (data: IDepartment) {
-        return <>{data?.title}</>;
-      },
+      render: (dept: any) => dept?.title,
     },
-    {
-      title: 'Designation',
-      dataIndex: 'designation',
-    },
+    { title: 'Designation', dataIndex: 'designation' },
     {
       title: 'Created at',
       dataIndex: 'createdAt',
-      render: function (data: any) {
-        return data && dayjs(data).format('MMM D, YYYY hh:mm A');
-      },
+      render: (val: any) => val && dayjs(val).format('MMM D, YYYY hh:mm A'),
       sorter: true,
     },
-    {
-      title: 'Contact no.',
-      dataIndex: 'contactNo',
-    },
+    { title: 'Contact no.', dataIndex: 'contactNo' },
     {
       title: 'Action',
       dataIndex: 'id',
-      render: function (data: any) {
-        return (
-          <>
-            <Link href={`/super_admin/manage-faculty/details/${data}`}>
-              <Button onClick={() => console.log(data)} type='primary'>
-                <EyeOutlined />
-              </Button>
-            </Link>
-            <Link href={`/super_admin/manage-faculty/edit/${data}`}>
-              <Button
-                style={{
-                  margin: '0px 5px',
-                }}
-                onClick={() => console.log(data)}
-                type='primary'
-              >
-                <EditOutlined />
-              </Button>
-            </Link>
-            <Button onClick={() => console.log(data)} type='primary' danger>
-              <DeleteOutlined />
+      render: (id: string) => (
+        <div className='flex gap-2'>
+          <Link href={`/super_admin/manage-faculty/details/${id}`}>
+            <Button size='sm' variant='outline'>
+              <Icons.Eye className='w-4 h-4' />
             </Button>
-          </>
-        );
-      },
+          </Link>
+          <Link href={`/super_admin/manage-faculty/edit/${id}`}>
+            <Button size='sm' variant='outline'>
+              <Edit className='w-4 h-4' />
+            </Button>
+          </Link>
+          <Button size='sm' variant='destructive'>
+            <Trash className='w-4 h-4' />
+          </Button>
+        </div>
+      ),
     },
   ];
+
   const onPaginationChange = (page: number, pageSize: number) => {
-    console.log('Page:', page, 'PageSize:', pageSize);
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
-    const { order, field } = sorter;
-    // console.log(order, field);
-    setSortBy(field as string);
-    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
+
+  const onTableChange = (sortColumn?: string, sortOrder?: 'asc' | 'desc') => {
+    setSortBy(sortColumn || '');
+    setSortOrder(sortOrder || '');
   };
 
   const resetFilters = () => {
@@ -126,46 +92,43 @@ const FacultyPage = () => {
     setSortOrder('');
     setSearchTerm('');
   };
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: 'super_admin',
-            link: '/super_admin',
-          },
-        ]}
-      />
+    <div className='min-h-screen p-6 space-y-6 bg-gray-50'>
+      {/* Action Bar */}
       <ActionBar title='Faculty List' link={actionBarObj.faculty.link} />
-      <Input
-        size='large'
-        placeholder='Search'
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{
-          width: '20%',
-        }}
-      />
-      <div>
-        <Link href='/super_admin/manage-faculty/create'>
-          <Button type='primary'>Create</Button>
-        </Link>
-        {(!!sortBy || !!sortOrder || !!searchTerm) && (
-          <Button style={{ margin: '0px 5px' }} type='primary' onClick={resetFilters}>
-            <ReloadOutlined />
-          </Button>
-        )}
+
+      {/* Filters */}
+      <div className='flex flex-col sm:flex-row items-center gap-4'>
+        <Input
+          placeholder='Search'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className='w-full sm:w-1/4'
+        />
+        <div className='flex gap-2'>
+          <Link href='/super_admin/manage-faculty/create'>
+            <Button>Create</Button>
+          </Link>
+          {(!!sortBy || !!sortOrder || !!searchTerm) && (
+            <Button variant='outline' onClick={resetFilters}>
+              <RefreshCcw className='w-4 h-4' />
+            </Button>
+          )}
+        </div>
       </div>
 
+      {/* Table */}
       <UMTable
         loading={isLoading}
         columns={columns}
         dataSource={faculties}
         pageSize={size}
         totalPages={meta?.total}
-        showSizeChanger={true}
+        showSizeChanger
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}
-        showPagination={true}
+        showPagination
       />
     </div>
   );

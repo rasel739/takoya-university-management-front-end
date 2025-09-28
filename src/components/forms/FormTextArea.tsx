@@ -1,5 +1,8 @@
-import { Input } from "antd";
-import { Controller, useFormContext } from "react-hook-form";
+'use client';
+
+import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Textarea } from '@/components/ui/textarea';
 
 type TextAreaProps = {
   name: string;
@@ -7,33 +10,29 @@ type TextAreaProps = {
   rows?: number;
   value?: string;
   placeholder?: string;
+  className?: string;
 };
 
-const FormTextArea = ({
+export default function FormTextArea({
   name,
   label,
-  rows,
+  rows = 4,
   value,
   placeholder,
-}: TextAreaProps) => {
+  className = '',
+}: TextAreaProps) {
   const { control } = useFormContext();
+
   return (
-    <div className={`flex flex-col  w-full`}>
-      {label ? label : null}
+    <div className={`flex flex-col w-full ${className}`}>
+      {label ? <label className='mb-1 text-sm font-medium'>{label}</label> : null}
+
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
-          <Input.TextArea
-            rows={rows}
-            placeholder={placeholder}
-            {...field}
-            defaultValue={value}
-          />
-        )}
+        defaultValue={value ?? ''}
+        render={({ field }) => <Textarea {...field} rows={rows} placeholder={placeholder} />}
       />
     </div>
   );
-};
-
-export default FormTextArea;
+}

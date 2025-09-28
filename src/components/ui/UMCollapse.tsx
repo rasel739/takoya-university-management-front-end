@@ -1,34 +1,45 @@
-import { Collapse } from "antd";
-const { Panel } = Collapse;
+'use client';
+
+import * as React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 export type ItemProps = {
   key: string;
   label: string;
-  children: React.ReactNode | React.ReactElement;
-  isTaken?: boolean;
+  children: React.ReactNode;
+  isTaken?: boolean; // optional extra flag if needed
 };
 
 type UMCollapseProps = {
   items: ItemProps[];
-  onChange?: (el: string | string[] | "") => void;
-  defaultActiveKey?: string | string[];
+  defaultActiveKey?: string[];
+  onChange?: (openKeys: string[]) => void;
 };
 
-const UMCollapse = ({
-  items,
-  onChange,
-  defaultActiveKey = ["1"],
-}: UMCollapseProps) => {
+const UMCollapse: React.FC<UMCollapseProps> = ({ items, defaultActiveKey = [], onChange }) => {
+  const [openItems, setOpenItems] = React.useState<string[] | undefined>(defaultActiveKey);
+
+  const handleValueChange = (keys: string[]) => {
+    setOpenItems(keys);
+    if (onChange) {
+      onChange(keys);
+    }
+  };
+
   return (
-    <Collapse defaultActiveKey={defaultActiveKey} onChange={onChange}>
-      {items?.map((item) => {
-        return (
-          <Panel header={item?.label} key={item?.key}>
-            {item?.children}
-          </Panel>
-        );
-      })}
-    </Collapse>
+    <Accordion type='multiple' value={openItems} onValueChange={handleValueChange}>
+      {items.map((item) => (
+        <AccordionItem key={item.key} value={item.key}>
+          <AccordionTrigger>{item.label}</AccordionTrigger>
+          <AccordionContent>{item.children}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 };
 

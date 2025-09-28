@@ -1,6 +1,5 @@
-import { useAcademicFacultiesQuery } from "@/redux/api/academic/facultyApi";
-import FormSelectField, { SelectOptions } from "./FormSelectField";
-import { useAcademicSemestersQuery } from "@/redux/api/academic/semesterApi";
+import FormSelectField, { SelectOptions } from './FormSelectField';
+import { useAcademicSemestersQuery } from '@/redux/api/academic/semesterApi';
 
 type ACFacultyFieldProps = {
   name: string;
@@ -15,17 +14,13 @@ const ACSemesterField = ({ name, label }: ACFacultyFieldProps) => {
   const academicSemesters = data?.academicSemesters;
   const acSemesterOptions = academicSemesters?.map((acSemester) => {
     return {
-      label: acSemester?.title + "-" + acSemester?.year,
+      label: acSemester?.title + '-' + acSemester?.year,
       value: acSemester?.id,
     };
   });
 
   return (
-    <FormSelectField
-      name={name}
-      label={label}
-      options={acSemesterOptions as SelectOptions[]}
-    />
+    <FormSelectField name={name} label={label} options={acSemesterOptions as SelectOptions[]} />
   );
 };
 

@@ -7,14 +7,6 @@
 @config '../../tailwind.config.ts';
 
 @custom-variant dark (&:is(.dark *));
-/* * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Outfit', sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-} */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -54,11 +46,11 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --animate-beam-move: beam-move 8s linear infinite;
   @keyframes beam-move {
-  0% {
-    transform: translateX(0);
+    0% {
+      transform: translateX(0);
     }
-  100% {
-    transform: translateX(100vw);
+    100% {
+      transform: translateX(100vw);
     }
   }
 }

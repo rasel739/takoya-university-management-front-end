@@ -19,7 +19,7 @@ const StudentPage = () => {
   const [sortOrder, setSortOrder] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const query: Record<string, any> = {
+  const query: Record<string, unknown> = {
     limit: size,
     page: page,
     sortBy,
@@ -41,7 +41,8 @@ const StudentPage = () => {
     },
     {
       title: 'Name',
-      render: (row: any) => `${row.firstName} ${row.middleName} ${row.lastName}`,
+      render: (row: { firstName: string; middleName: string; lastName: string }) =>
+        `${row.firstName} ${row.middleName} ${row.lastName}`,
     },
     {
       title: 'Email',
@@ -50,7 +51,7 @@ const StudentPage = () => {
     {
       title: 'Created At',
       dataIndex: 'createdAt',
-      render: (row: any) => row && dayjs(row).format('MMM D, YYYY hh:mm A'),
+      render: (row: string) => row && dayjs(row).format('MMM D, YYYY hh:mm A'),
       sorter: true,
     },
     {
@@ -64,7 +65,7 @@ const StudentPage = () => {
     },
     {
       title: 'Action',
-      render: (row: any) => (
+      render: (row: { id: number }) => (
         <div className='flex gap-2'>
           <Link href={`/super_admin/manage-student/details/${row.id}`}>
             <Button size='sm' variant='outline'>
@@ -131,10 +132,10 @@ const StudentPage = () => {
       {/* Table */}
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={students}
+        columns={columns as []}
+        dataSource={students as []}
         pageSize={size}
-        totalPages={meta?.total}
+        totalRecords={meta?.total}
         showSizeChanger
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}

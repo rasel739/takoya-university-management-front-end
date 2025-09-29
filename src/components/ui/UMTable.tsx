@@ -19,6 +19,7 @@ export type UMTableProps<T> = {
   totalRecords?: number;
   showSizeChanger?: boolean;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  onTableChange?: (sortColumn?: string, sortOrder?: 'asc' | 'desc') => void;
   showPagination?: boolean;
 };
 

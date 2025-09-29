@@ -13,7 +13,7 @@ import { Trash2, Edit2, RefreshCw } from 'lucide-react';
 import { TuToastify } from '@/lib/reactToastify';
 
 const ManageDepartmentPage = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
@@ -39,8 +39,9 @@ const ManageDepartmentPage = () => {
     try {
       await deleteDepartment(id);
       TuToastify('Department deleted successfully!', 'success');
-    } catch (err: any) {
-      TuToastify('Failed to delete', 'warning');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
 
@@ -50,14 +51,13 @@ const ManageDepartmentPage = () => {
       title: 'Created At',
       key: 'createdAt',
       dataIndex: 'createdAt',
-      render: (value: string, record: any, index: number) =>
-        value && dayjs(value).format('MMM D, YYYY hh:mm A'),
+      render: (value: string) => value && dayjs(value).format('MMM D, YYYY hh:mm A'),
       sorter: true,
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (data: any) => (
+      render: (data: { id: string }) => (
         <div className='flex gap-2'>
           <Link href={`/super_admin/department/edit/${data?.id}`}>
             <Button variant='outline' size='sm'>
@@ -116,7 +116,7 @@ const ManageDepartmentPage = () => {
       <UMTable
         loading={isLoading}
         columns={columns}
-        dataSource={Array.isArray(departments) ? departments : []}
+        dataSource={departments as unknown as []}
         pageSize={size}
         showSizeChanger
         onPaginationChange={onPaginationChange}

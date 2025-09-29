@@ -14,8 +14,9 @@ const CreateDepartmentPage = () => {
     try {
       await addDepartment(data);
       TuToastify('Department added successfully!', 'success');
-    } catch (err: any) {
-      TuToastify('Failed to create department', 'error');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
 

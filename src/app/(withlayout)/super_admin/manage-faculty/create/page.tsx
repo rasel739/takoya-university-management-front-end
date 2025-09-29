@@ -13,10 +13,11 @@ import { useAddFacultyWithFormDataMutation } from '@/redux/api/facultyApi';
 import { Button } from '@/components/ui/button';
 import { TuToastify } from '@/lib/reactToastify';
 
+type FormValues = Record<string, string | number | boolean | File | undefined>;
+
 const CreateFacultyPage = () => {
   const [addFacultyWithFormData] = useAddFacultyWithFormDataMutation();
-
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: FormValues) => {
     const obj = { ...values };
     const file = obj['file'];
     delete obj['file'];
@@ -32,8 +33,9 @@ const CreateFacultyPage = () => {
       if (res) {
         TuToastify('Faculty created successfully!', 'success');
       }
-    } catch (err: any) {
-      TuToastify('Something went wrong', 'error');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 

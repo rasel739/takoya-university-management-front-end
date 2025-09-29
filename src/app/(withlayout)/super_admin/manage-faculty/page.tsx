@@ -20,7 +20,7 @@ const FacultyPage = () => {
   const [sortOrder, setSortOrder] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const query: Record<string, any> = {
+  const query: Record<string, unknown> = {
     limit: size,
     page,
     sortBy,
@@ -38,19 +38,20 @@ const FacultyPage = () => {
     { title: 'Id', dataIndex: 'facultyId', sorter: true },
     {
       title: 'Name',
-      render: (row: any) => `${row.firstName} ${row.middleName || ''} ${row.lastName}`,
+      render: (row: { firstName: string; middleName: string; lastName: string }) =>
+        `${row?.firstName} ${row?.middleName || ''} ${row?.lastName}`,
     },
     { title: 'Email', dataIndex: 'email' },
     {
       title: 'Department',
       dataIndex: 'academicDepartment',
-      render: (dept: any) => dept?.title,
+      render: (dept: { title: string }) => dept?.title,
     },
     { title: 'Designation', dataIndex: 'designation' },
     {
       title: 'Created at',
       dataIndex: 'createdAt',
-      render: (val: any) => val && dayjs(val).format('MMM D, YYYY hh:mm A'),
+      render: (val: string) => val && dayjs(val).format('MMM D, YYYY hh:mm A'),
       sorter: true,
     },
     { title: 'Contact no.', dataIndex: 'contactNo' },
@@ -121,10 +122,10 @@ const FacultyPage = () => {
       {/* Table */}
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={faculties}
+        columns={columns as []}
+        dataSource={faculties as []}
         pageSize={size}
-        totalPages={meta?.total}
+        totalRecords={meta?.total}
         showSizeChanger
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}

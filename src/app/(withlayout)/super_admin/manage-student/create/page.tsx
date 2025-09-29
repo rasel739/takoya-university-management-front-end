@@ -21,7 +21,9 @@ const CreateStudentPage = () => {
     { title: 'Local Guardian Information', content: <LocalGuardianInfo /> },
   ];
 
-  const handleStudentSubmit = async (values: any) => {
+  type FormValues = Record<string, string | number | boolean | File | undefined>;
+
+  const handleStudentSubmit = async (values: FormValues) => {
     setLoading(true);
     const { file, ...rest } = values;
     const formData = new FormData();
@@ -29,12 +31,13 @@ const CreateStudentPage = () => {
     formData.append('data', JSON.stringify(rest));
 
     try {
-      const res: any = await addStudentWithFormData(formData);
+      const res = await addStudentWithFormData(formData);
       if (res) {
         TuToastify('Student created successfully!', 'success');
       }
-    } catch (err: any) {
-      TuToastify('Failed to create student', 'error');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     } finally {
       setLoading(false);
     }

@@ -25,8 +25,9 @@ const EditDepartmentPage = ({ params }: IDProps) => {
     try {
       await updateDepartment({ id, body: values });
       TuToastify('Department updated successfully!', 'success');
-    } catch (err: any) {
-      TuToastify('Update failed', 'error');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
 

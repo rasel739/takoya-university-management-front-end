@@ -7,147 +7,107 @@ import FormDatePicker from '@/components/forms/FormDatePicker';
 import FormInput from '@/components/forms/FormInput';
 import FormSelectField from '@/components/forms/FormSelectField';
 import FormTextArea from '@/components/forms/FormTextArea';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
 import UploadImage from '@/components/ui/UploadImage';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { bloodGroupOptions, genderOptions } from '@/constants/global';
+import { TuToastify } from '@/lib/reactToastify';
 import { useAddFacultyWithFormDataMutation } from '@/redux/api/facultyApi';
-import { Button, Col, Row, message } from 'antd';
+
+type FacultyFormValues = {
+  faculty: {
+    name: {
+      firstName: string;
+      middleName?: string;
+      lastName: string;
+    };
+    gender: string;
+    academicFaculty: string;
+    academicDepartment: string;
+    email: string;
+    contactNo: string;
+    emergencyContactNo: string;
+    dateOfBirth: string;
+    bloodGroup: string;
+    designation: string;
+    presentAddress: string;
+    permanentAddress: string;
+  };
+  password: string;
+  file?: File;
+};
 
 const CreateFacultyPage = () => {
   const [addFacultyWithFormData] = useAddFacultyWithFormDataMutation();
 
-  const adminOnSubmit = async (values: any) => {
-    const obj = { ...values };
-    const file = obj['file'];
-    delete obj['file'];
-    const data = JSON.stringify(obj);
+  const adminOnSubmit = async (values: FacultyFormValues) => {
+    const { file, ...rest } = values as FacultyFormValues & { file?: File };
     const formData = new FormData();
-    formData.append('file', file as Blob);
-    formData.append('data', data);
-    message.loading('Creating...');
+    if (file) {
+      formData.append('file', file);
+    }
+    formData.append('data', JSON.stringify(rest));
+
+    TuToastify('Creating...', 'loading');
     try {
-      const res = await addFacultyWithFormData(formData);
-      if (!!res) {
-        message.success('Faculty created successfully!');
-      }
-    } catch (err: any) {
-      console.error(err.message);
+      await addFacultyWithFormData(formData).unwrap();
+      TuToastify('Faculty created successfully!', 'success');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
 
-  const base = 'admin';
   return (
-    <>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'manage-faculty', link: `/${base}/manage-faculty` },
-        ]}
-      />
-      <h1>Create Faculty</h1>
-      <Form submitHandler={adminOnSubmit}>
-        {/* faculty information */}
-        <div
-          style={{
-            border: '1px solid #d9d9d9',
-            borderRadius: '5px',
-            padding: '15px',
-            marginBottom: '10px',
-          }}
-        >
-          <p style={{ fontSize: '18px', fontWeight: '500', margin: '5px 0px' }}>
-            Faculty information
-          </p>
-          <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-            <Col span={6} style={{ margin: '10px 0' }}>
-              <FormInput name='faculty.name.firstName' label='First name' size='large' />
-            </Col>
+    <div className='flex justify-center items-center p-6 bg-gray-50 min-h-screen'>
+      <Card className='w-full max-w-6xl shadow-md rounded-2xl'>
+        <CardHeader>
+          <CardTitle className='text-xl font-semibold text-center'>Create Faculty</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form submitHandler={adminOnSubmit}>
+            <div className='border rounded-lg p-6 mb-6'>
+              <p className='text-lg font-medium mb-4'>Faculty Information</p>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                <FormInput name='faculty.name.firstName' label='First Name' />
+                <FormInput name='faculty.name.middleName' label='Middle Name' />
+                <FormInput name='faculty.name.lastName' label='Last Name' />
+                <FormInput type='password' name='password' label='Password' />
+                <FormSelectField name='faculty.gender' label='Gender' options={genderOptions} />
+                <ACFacultyField name='faculty.academicFaculty' label='Academic Faculty' />
+                <ACDepartmentField name='faculty.academicDepartment' label='Academic Department' />
+                <UploadImage name='file' />
+              </div>
+            </div>
+            <div className='border rounded-lg p-6 mb-6'>
+              <p className='text-lg font-medium mb-4'>Basic Information</p>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                <FormInput type='email' name='faculty.email' label='Email Address' />
+                <FormInput name='faculty.contactNo' label='Contact No.' />
+                <FormInput name='faculty.emergencyContactNo' label='Emergency Contact No.' />
+                <FormDatePicker name='faculty.dateOfBirth' label='Date of Birth' />
+                <FormSelectField
+                  name='faculty.bloodGroup'
+                  label='Blood Group'
+                  options={bloodGroupOptions}
+                />
+                <FormInput name='faculty.designation' label='Designation' />
+              </div>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
+                <FormTextArea name='faculty.presentAddress' label='Present Address' rows={4} />
+                <FormTextArea name='faculty.permanentAddress' label='Permanent Address' rows={4} />
+              </div>
+            </div>
 
-            <Col span={6} style={{ margin: '10px 0' }}>
-              <FormInput name='faculty.name.middleName' label='Middle name' size='large' />
-            </Col>
-
-            <Col span={6} style={{ margin: '10px 0' }}>
-              <FormInput name='faculty.name.lastName' label='Last name' size='large' />
-            </Col>
-
-            <Col span={6} style={{ margin: '10px 0' }}>
-              <FormInput type='password' name='password' label='Password' size='large' />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormSelectField name='faculty.gender' label='Gender' options={genderOptions} />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <ACFacultyField name='faculty.academicFaculty' label='Academic Faculty' />
-            </Col>
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <ACDepartmentField name='faculty.academicDepartment' label='Academic Department' />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <UploadImage name='file' />
-            </Col>
-          </Row>
-        </div>
-        {/* basic information  */}
-        <div
-          style={{
-            border: '1px solid #d9d9d9',
-            borderRadius: '5px',
-            padding: '15px',
-            marginBottom: '10px',
-          }}
-        >
-          <p style={{ fontSize: '18px', fontWeight: '500', margin: '5px 0px' }}>
-            Basic information
-          </p>
-          <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormInput type='email' name='faculty.email' label='Email address' size='large' />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormInput name='faculty.contactNo' label='Contact no.' size='large' />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormInput
-                name='faculty.emergencyContactNo'
-                label='Emergency contact no.'
-                size='large'
-              />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormDatePicker name='faculty.dateOfBirth' label='Date of birth' />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormSelectField
-                name='faculty.bloodGroup'
-                label='Blood group'
-                options={bloodGroupOptions}
-              />
-            </Col>
-
-            <Col span={8} style={{ margin: '10px 0' }}>
-              <FormInput name='faculty.designation' label='Designation' size='large' />
-            </Col>
-
-            <Col span={12} style={{ margin: '10px 0' }}>
-              <FormTextArea name='faculty.presentAddress' label='Present address' rows={4} />
-            </Col>
-
-            <Col span={12} style={{ margin: '10px 0' }}>
-              <FormTextArea name='faculty.permanentAddress' label='Permanent address' rows={4} />
-            </Col>
-          </Row>
-        </div>
-        <Button htmlType='submit'>submit</Button>
-      </Form>
-    </>
+            <div className='flex justify-end'>
+              <Button variant='default' type='submit' className='px-6'>
+                Submit
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

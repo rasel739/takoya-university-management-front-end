@@ -1,82 +1,72 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
+import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
 import FormMultiSelectField from '@/components/forms/FormMultiSelectField';
 import { SelectOptions } from '@/components/forms/FormSelectField';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
 import { useAddCourseMutation, useCoursesQuery } from '@/redux/api/courseApi';
-import { Button, Col, Row, message } from 'antd';
+
+type CourseFormValues = {
+  title: string;
+  code: string;
+  credits: string | number;
+  coursePreRequisites: string[];
+};
 
 const CreateCoursePage = () => {
   const [addCourse] = useAddCourseMutation();
-
-  const { data, isLoading } = useCoursesQuery({ limit: 10, page: 1 });
+  const { data } = useCoursesQuery({ limit: 10, page: 1 });
 
   const courses = data?.courses;
-  const coursesOptions = courses?.map((course) => {
-    return {
-      label: course?.title,
-      value: course?.id,
-    };
-  });
+  const coursesOptions = courses?.map((course) => ({
+    label: course?.title,
+    value: course?.id,
+  }));
 
-  const onSubmit = async (data: any) => {
-    data.credits = parseInt(data?.credits);
-
-    const coursePreRequisitesOptions = data?.coursePreRequisites?.map((id: string) => {
-      return {
+  const onSubmit = async (formData: CourseFormValues) => {
+    const payload = {
+      ...formData,
+      credits: Number(formData.credits),
+      coursePreRequisites: formData.coursePreRequisites?.map((id) => ({
         courseId: id,
-      };
-    });
+      })),
+    };
 
-    data.coursePreRequisites = coursePreRequisitesOptions;
-
-    message.loading('Creating.....');
+    TuToastify('Creating...', 'loading');
     try {
-      const res = await addCourse(data).unwrap();
+      const res = await addCourse(payload).unwrap();
       if (res?.id) {
-        message.success('Course created successfully');
+        TuToastify('Course created successfully', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'course', link: `/${base}/course` },
-        ]}
-      />
-      <h1>Create Course</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <div style={{ margin: '10px 0px' }}>
-              <FormInput name='title' label='Title' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormInput name='code' label='Course Code' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormInput name='credits' label='Course Credits' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormMultiSelectField
-                options={coursesOptions as SelectOptions[]}
-                name='coursePreRequisites'
-                label='Pre Requisite Courses'
-              />
-            </div>
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
+    <div className='max-w-3xl mx-auto p-6'>
+      <h1 className='text-2xl font-semibold mb-6'>Create Course</h1>
+
+      <Form<CourseFormValues> submitHandler={onSubmit}>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <FormInput name='title' label='Title' placeholder='Enter course title' />
+          <FormInput name='code' label='Course Code' placeholder='Enter course code' />
+          <FormInput name='credits' label='Course Credits' placeholder='Enter credits' />
+          <FormMultiSelectField
+            options={coursesOptions as SelectOptions[]}
+            name='coursePreRequisites'
+            label='Pre Requisite Courses'
+          />
+        </div>
+
+        <div className='mt-6 flex justify-end'>
+          <Button variant='default' type='submit' className='px-6'>
+            Add Course
+          </Button>
+        </div>
       </Form>
     </div>
   );

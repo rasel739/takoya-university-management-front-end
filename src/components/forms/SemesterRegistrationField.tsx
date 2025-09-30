@@ -4,11 +4,11 @@ import { useSemesterRegistrationsQuery } from '@/redux/api/semesterRegistrationA
 type SemesterRegistrationFieldProps = {
   name: string;
   label?: string;
-  onChange?: (e: any) => void;
+  onChange?: (e: unknown) => void;
 };
 
 const SemesterRegistrationField = ({ name, label, onChange }: SemesterRegistrationFieldProps) => {
-  const { data, isLoading } = useSemesterRegistrationsQuery({
+  const { data } = useSemesterRegistrationsQuery({
     limit: 100,
     page: 1,
   });

@@ -1,68 +1,67 @@
 'use client';
 
 import ACSemesterField from '@/components/forms/ACSemesterField';
-import Form from '@/components/Forms/Form';
+import Form from '@/components/forms/Form';
 import FormDatePicker from '@/components/forms/FormDatePicker';
 import FormInput from '@/components/forms/FormInput';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { TuToastify } from '@/lib/reactToastify';
 import { useAddSemesterRegistrationsMutation } from '@/redux/api/semesterRegistrationApi';
-import { Button, Col, Row, message } from 'antd';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface SemesterRegistrationFormValues {
+  startDate: string | Date;
+  endDate: string | Date;
+  academicSemesterId: string;
+  minCredit: number | string;
+  maxCredit: number | string;
+}
 
 const CreateSemesterRegistrationPage = () => {
   const [addSemesterRegistrations] = useAddSemesterRegistrationsMutation();
-  const onSubmit = async (data: any) => {
-    data.minCredit = parseInt(data?.minCredit);
-    data.maxCredit = parseInt(data?.maxCredit);
 
-    // console.log(data);
-    message.loading('Creating.....');
+  const onSubmit = async (data: SemesterRegistrationFormValues) => {
+    const formattedData = {
+      ...data,
+      minCredit: Number(data.minCredit),
+      maxCredit: Number(data.maxCredit),
+    };
+
+    TuToastify('Creating...', 'loading');
     try {
-      const res = await addSemesterRegistrations(data).unwrap();
+      const res = await addSemesterRegistrations(formattedData).unwrap();
       if (res?.id) {
-        message.success('Semester registration successfully added');
+        TuToastify('Semester registration successfully added', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          {
-            label: 'semester-registration',
-            link: `/${base}/semester-registration`,
-          },
-        ]}
-      />
-      <h1>Create Semester Registration</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <div style={{ margin: '10px 0px' }}>
-              <FormDatePicker name='startDate' label='Start Date' size='large' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormDatePicker name='endDate' label='End Date' size='large' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
+    <div className='max-w-4xl mx-auto p-6'>
+      <Card>
+        <CardHeader>
+          <CardTitle className='text-xl font-bold'>Create Semester Registration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form submitHandler={onSubmit}>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <FormDatePicker name='startDate' label='Start Date' />
+              <FormDatePicker name='endDate' label='End Date' />
               <ACSemesterField name='academicSemesterId' label='Academic Semester' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
               <FormInput name='minCredit' label='Min Credit' type='number' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
               <FormInput name='maxCredit' label='Max Credit' type='number' />
             </div>
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
-      </Form>
+            <div className='mt-6 flex justify-end'>
+              <Button type='submit' className='px-6'>
+                Add
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

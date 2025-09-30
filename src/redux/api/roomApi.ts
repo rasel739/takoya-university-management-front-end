@@ -1,17 +1,17 @@
-import { IMeta, IRoom } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { IMeta, IRoom } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-const ROOM_URL = "/rooms";
+const ROOM_URL = '/rooms';
 
 export const roomApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     //get all rooms
     rooms: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: ROOM_URL,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -27,7 +27,7 @@ export const roomApi = baseApi.injectEndpoints({
     room: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${ROOM_URL}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.room],
     }),
@@ -35,7 +35,7 @@ export const roomApi = baseApi.injectEndpoints({
     addRoom: build.mutation({
       query: (data) => ({
         url: ROOM_URL,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.room],
@@ -44,7 +44,7 @@ export const roomApi = baseApi.injectEndpoints({
     updateRoom: build.mutation({
       query: (data) => ({
         url: `${ROOM_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.room],
@@ -53,7 +53,7 @@ export const roomApi = baseApi.injectEndpoints({
     deleteRoom: build.mutation({
       query: (id) => ({
         url: `${ROOM_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.room],
     }),

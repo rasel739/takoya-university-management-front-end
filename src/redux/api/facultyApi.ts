@@ -1,17 +1,17 @@
-import { ICoreFaculty, IFaculty, IFacultyCourse, IMeta } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { ICoreFaculty, IFaculty, IFacultyCourse, IMeta } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-const BASE_FACULTY_API_URL = "/faculties";
+const BASE_FACULTY_API_URL = '/faculties';
 
 export const facultyApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get all faculty user endpoint
     faculties: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: BASE_FACULTY_API_URL,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -27,17 +27,17 @@ export const facultyApi = baseApi.injectEndpoints({
     faculty: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${BASE_FACULTY_API_URL}/profile/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.faculty],
     }),
     // create faculty user endpoint
     addFacultyWithFormData: build.mutation({
       query: (data) => ({
-        url: "/users/create-faculty",
-        method: "POST",
+        url: '/users/create-faculty',
+        method: 'POST',
         data,
-        contentType: "multipart/form-data",
+        contentType: 'multipart/form-data',
       }),
       invalidatesTags: [tagTypes.faculty],
     }),
@@ -45,7 +45,7 @@ export const facultyApi = baseApi.injectEndpoints({
     updateFaculty: build.mutation({
       query: (data) => ({
         url: `${BASE_FACULTY_API_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.faculty],
@@ -54,16 +54,16 @@ export const facultyApi = baseApi.injectEndpoints({
     deleteFaculty: build.mutation({
       query: (id) => ({
         url: `${BASE_FACULTY_API_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.faculty],
     }),
 
     facultyCourses: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${BASE_FACULTY_API_URL}/my-courses`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -77,10 +77,10 @@ export const facultyApi = baseApi.injectEndpoints({
     }),
 
     facultyCourseStudents: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${BASE_FACULTY_API_URL}/my-course-students`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },

@@ -1,48 +1,89 @@
-"use client";
+'use client';
 
-import ActionBar from "@/components/ui/ActionBar";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import UMCollapse, { ItemProps } from "@/components/ui/UMCollapse";
+import { Button } from '@/components/ui/button';
+import UMCollapse, { ItemProps } from '@/components/ui/UMCollapse';
+import { TuToastify } from '@/lib/reactToastify';
 import {
   useConfirmMyRegistrationMutation,
   useEnrollIntoCourseMutation,
   useMySemesterRegistrationCoursesQuery,
   useWithdrawFromCourseMutation,
-} from "@/redux/api/semesterRegistrationApi";
-import { Button, message } from "antd";
+} from '@/redux/api/semesterRegistrationApi';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+
+interface ISchedule {
+  id: string;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+}
+
+interface ISection {
+  id: string;
+  title: string;
+  currentlyEnrolledStudent: number;
+  maxCapacity: number;
+  isTaken: boolean;
+  offeredCourseClassSchedules: ISchedule[];
+}
+
+interface ICourse {
+  id: string;
+  course: {
+    title: string;
+  };
+  isTaken: boolean;
+  offeredCourseSections: ISection[];
+}
 
 const ViewPreregistrationPage = () => {
-  const { data, isLoading } = useMySemesterRegistrationCoursesQuery({});
+  const { data } = useMySemesterRegistrationCoursesQuery({});
   const [enrollIntoCourse] = useEnrollIntoCourseMutation();
   const [withdrawFromCourse] = useWithdrawFromCourseMutation();
   const [confirmMyRegistration] = useConfirmMyRegistrationMutation();
-  //   console.log(data, "offeredCourseSections");
 
   const handleEnroll = async ({
     offeredCourseId,
     offeredCourseSectionId,
-  }: any) => {
+  }: {
+    offeredCourseId: string;
+    offeredCourseSectionId: string;
+  }) => {
     try {
       await enrollIntoCourse({
         offeredCourseId,
         offeredCourseSectionId,
       }).unwrap();
-    } catch (err: any) {
-      message.error(err?.message);
+      TuToastify('Enrolled successfully', 'success');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
   const handleWithdraw = async ({
     offeredCourseId,
     offeredCourseSectionId,
-  }: any) => {
+  }: {
+    offeredCourseId: string;
+    offeredCourseSectionId: string;
+  }) => {
     try {
       await withdrawFromCourse({
         offeredCourseId,
         offeredCourseSectionId,
       }).unwrap();
-    } catch (err: any) {
-      message.error(err?.message);
+      TuToastify('Withdrawn successfully', 'success');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
@@ -50,98 +91,60 @@ const ViewPreregistrationPage = () => {
     try {
       const res = await confirmMyRegistration({}).unwrap();
       if (res) {
-        message.success("Successfully registered");
+        TuToastify('Successfully registered', 'success');
       }
-    } catch (err: any) {
-      message.error(err?.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
-  const availableCourses: ItemProps[] = data?.map(
-    (availableCourse: any, index: number) => {
-      const obj = {
+  const availableCourses: ItemProps[] =
+    data?.map((availableCourse: ICourse, index: number) => {
+      return {
         key: index,
         label: availableCourse?.course?.title,
         isTaken: availableCourse.isTaken,
         children: (
-          <table style={{ padding: "0px 10px", borderSpacing: "10px 15px" }}>
-            {availableCourse?.offeredCourseSections?.map(
-              (section: any, index: number) => {
-                return (
-                  <tr key={index}>
-                    <td style={{ width: "30%" }}>
-                      <span style={{ fontWeight: "bold" }}>
-                        Sec - {section?.title}{" "}
-                      </span>
-                    </td>
-                    <td style={{ width: "30%" }}>
-                      <span>
-                        Enrolled - ({section?.currentlyEnrolledStudent}/
-                        {section?.maxCapacity})
-                      </span>
-                    </td>
-
-                    <td style={{ width: "30%" }}>
-                      <table
-                        style={{
-                          border: "1px solid #d9d9d9",
-                          padding: "5px 10px",
-                          borderRadius: "5px",
-                        }}
-                      >
-                        <th
-                          style={{
-                            textAlign: "center",
-                            borderBottom: "1px solid black",
-                            textTransform: "capitalize",
-                          }}
-                          colSpan={3}
-                        >
-                          class schedule
-                        </th>
-
-                        {section?.offeredCourseClassSchedules?.map(
-                          (el: any, index: number) => {
-                            return (
-                              <tr
-                                key={index}
-                                style={{
-                                  width: "30%",
-                                }}
-                              >
-                                <td
-                                  style={{
-                                    fontWeight: 700,
-                                    marginRight: "10px",
-                                    textTransform: "capitalize",
-                                    textAlign: "right",
-                                  }}
-                                >
-                                  {el?.dayOfWeek}
-                                </td>
-                                <td
-                                  style={{
-                                    textAlign: "left",
-                                    padding: "0px 15px",
-                                  }}
-                                >
-                                  {el?.startTime} - {el?.endTime}
-                                </td>
-                              </tr>
-                            );
-                          }
-                        )}
-                      </table>
-                    </td>
-                    <td
-                      style={{
-                        width: "30%",
-                      }}
-                    >
+          <div className='overflow-x-auto'>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className='w-1/4'>Section</TableHead>
+                  <TableHead className='w-1/4'>Capacity</TableHead>
+                  <TableHead className='w-1/3'>Class Schedule</TableHead>
+                  <TableHead className='w-1/6 text-right'>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {availableCourse?.offeredCourseSections?.map((section: ISection) => (
+                  <TableRow key={section.id}>
+                    <TableCell>
+                      <span className='font-medium'>Sec - {section?.title}</span>
+                    </TableCell>
+                    <TableCell>
+                      Enrolled:{' '}
+                      <b>
+                        {section?.currentlyEnrolledStudent}/{section?.maxCapacity}
+                      </b>
+                    </TableCell>
+                    <TableCell>
+                      <div className='space-y-1'>
+                        {section?.offeredCourseClassSchedules?.map((el: ISchedule) => (
+                          <div key={el.id} className='flex justify-between text-sm'>
+                            <span className='font-semibold capitalize'>{el?.dayOfWeek}</span>
+                            <span>
+                              {el?.startTime} - {el?.endTime}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell className='text-right'>
                       {availableCourse?.isTaken && section?.isTaken ? (
                         <Button
-                          type="primary"
-                          danger
+                          variant='destructive'
+                          size='sm'
                           onClick={() =>
                             handleWithdraw({
                               offeredCourseId: availableCourse?.id,
@@ -153,7 +156,8 @@ const ViewPreregistrationPage = () => {
                         </Button>
                       ) : (
                         <Button
-                          type="primary"
+                          variant='default'
+                          size='sm'
                           onClick={() =>
                             handleEnroll({
                               offeredCourseId: availableCourse?.id,
@@ -164,45 +168,36 @@ const ViewPreregistrationPage = () => {
                           Enroll
                         </Button>
                       )}
-                    </td>
-                  </tr>
-                );
-              }
-            )}
-          </table>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         ),
       };
-
-      return obj;
-    }
-  );
+    }) ?? [];
 
   const isAtLeastOneCourseTaken =
-    availableCourses?.filter((el: ItemProps) => el.isTaken === true).length > 0
-      ? true
-      : false;
+    availableCourses?.filter((el: ItemProps) => el.isTaken === true).length > 0;
 
-  const base = "student";
   return (
-    <>
-      <UMBreadCrumb items={[{ label: `${base}`, link: `/${base}` }]} />
-      <ActionBar title="Course Pre-registration" />
+    <div className='space-y-6'>
+      <h1 className='text-2xl font-bold tracking-tight'>Course Pre-registration</h1>
+
       <UMCollapse
         items={availableCourses}
         defaultActiveKey={availableCourses?.map((item) => item.key)}
       />
+
       {isAtLeastOneCourseTaken && (
-        <div
-          style={{
-            margin: "15px 0px",
-          }}
-        >
-          <Button onClick={handleConfirmRegistration} type="primary">
+        <div className='pt-4'>
+          <Button onClick={handleConfirmRegistration} className='w-full md:w-auto'>
             Confirm Registration
           </Button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

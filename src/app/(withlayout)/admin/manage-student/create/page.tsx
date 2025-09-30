@@ -1,68 +1,77 @@
-"use client";
-import StepperForm from "@/components/StepperForm/StepperForm";
-import GuardianInfo from "@/components/StudentForms/GuardianInfo";
-import LocalGuardianInfo from "@/components/StudentForms/LocalGuardianInfo";
-import StudentBasicInfo from "@/components/StudentForms/StudentBasicInfo";
-import StudentInfo from "@/components/StudentForms/StudentInfo";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { useAddStudentWithFormDataMutation } from "@/redux/api/studentApi";
-import { message } from "antd";
+'use client';
+
+import StepperForm from '@/components/StepperForm/StepperForm';
+import GuardianInfo from '@/components/StudentForms/GuardianInfo';
+import LocalGuardianInfo from '@/components/StudentForms/LocalGuardianInfo';
+import StudentBasicInfo from '@/components/StudentForms/StudentBasicInfo';
+import StudentInfo from '@/components/StudentForms/StudentInfo';
+import { TuToastify } from '@/lib/reactToastify';
+import { useAddStudentWithFormDataMutation } from '@/redux/api/studentApi';
+
+interface StudentFormValues {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  email: string;
+  contactNo: string;
+  gender: string;
+  guardianName?: string;
+  guardianPhone?: string;
+  localGuardianName?: string;
+  localGuardianPhone?: string;
+  file: File;
+}
 
 const CreateStudentPage = () => {
   const [addStudentWithFormData] = useAddStudentWithFormDataMutation();
+
   const steps = [
     {
-      title: "Student Information",
+      title: 'Student Information',
       content: <StudentInfo />,
     },
     {
-      title: "Basic Information",
+      title: 'Basic Information',
       content: <StudentBasicInfo />,
     },
     {
-      title: "Guardian Information",
+      title: 'Guardian Information',
       content: <GuardianInfo />,
     },
     {
-      title: "Local Guardian Information",
+      title: 'Local Guardian Information',
       content: <LocalGuardianInfo />,
     },
   ];
 
-  const handleStudentSubmit = async (values: any) => {
-    const obj = { ...values };
-    const file = obj["file"];
-    delete obj["file"];
-    const data = JSON.stringify(obj);
+  const handleStudentSubmit = async (values: StudentFormValues) => {
+    const { file, ...rest } = values;
+
     const formData = new FormData();
-    formData.append("file", file as Blob);
-    formData.append("data", data);
-    message.loading("Creating...");
+    formData.append('file', file);
+    formData.append('data', JSON.stringify(rest));
+
+    TuToastify('Creating...', 'loading');
     try {
-      const res = await addStudentWithFormData(formData);
-      if (!!res) {
-        message.success("Student created successfully!");
+      const res = await addStudentWithFormData(formData).unwrap();
+      if (res) {
+        TuToastify('Student created successfully!', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
 
-  const base = "admin";
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: "manage-student", link: `/${base}/manage-student` },
-        ]}
-      />
-      <h1 style={{ margin: "10px 0px" }}>Create Student</h1>
+    <div className='space-y-6'>
+      <h1 className='text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100'>
+        Create Student
+      </h1>
+
       <StepperForm
-        persistKey="student-create-form"
-        submitHandler={(value) => {
-          handleStudentSubmit(value);
-        }}
+        persistKey='student-create-form'
+        submitHandler={handleStudentSubmit}
         steps={steps}
       />
     </div>

@@ -1,43 +1,37 @@
-"use client";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ReloadOutlined,
-  PlayCircleOutlined,
-} from "@ant-design/icons";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import UMTable from "@/components/ui/UMTable";
-
-import { Button, Input, Tooltip, message } from "antd";
-import Link from "next/link";
-import { useState } from "react";
-import ActionBar from "@/components/ui/ActionBar";
-import { useDebounced } from "@/redux/hooks";
-import dayjs from "dayjs";
+'use client';
+import UMTable from '@/components/ui/UMTable';
+import Link from 'next/link';
+import { useState } from 'react';
+import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
+import { useDebounced } from '@/redux/hooks';
+import dayjs from 'dayjs';
 import {
   useDeleteSemesterRegistrationsMutation,
   useSemesterRegistrationsQuery,
   useStartNewSemesterMutation,
-} from "@/redux/api/semesterRegistrationApi";
+} from '@/redux/api/semesterRegistrationApi';
+import { TuToastify } from '@/lib/reactToastify';
+import { Button } from '@/components/ui/button';
+import { Edit, PlayCircle, Repeat, Trash } from 'lucide-react';
+import { Tooltip, TooltipContent } from '@/components/ui/tooltip';
+import { Input } from '@/components/ui/input';
 
 const SemesterRegistrationPage = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
-  const [sortBy, setSortBy] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [deleteSemesterRegistrations] =
-    useDeleteSemesterRegistrationsMutation();
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [deleteSemesterRegistrations] = useDeleteSemesterRegistrationsMutation();
 
   const [startNewSemester] = useStartNewSemesterMutation();
 
-  query["limit"] = size;
-  query["page"] = page;
-  query["sortBy"] = sortBy;
-  query["sortOrder"] = sortOrder;
-  // query["searchTerm"] = searchTerm;
+  query['limit'] = size;
+  query['page'] = page;
+  query['sortBy'] = sortBy;
+  query['sortOrder'] = sortOrder;
 
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
@@ -45,109 +39,110 @@ const SemesterRegistrationPage = () => {
   });
 
   if (!!debouncedTerm) {
-    query["searchTerm"] = debouncedTerm;
+    query['searchTerm'] = debouncedTerm;
   }
   const { data, isLoading } = useSemesterRegistrationsQuery({ ...query });
 
   const semesterRegistrations = data?.semesterRegistrations;
   const meta = data?.meta;
-  // console.log(semesterRegistrations);
 
   const handleStartSemester = async (id: string) => {
     try {
       const res = await startNewSemester(id).unwrap();
-      message.success(res);
-    } catch (err: any) {
-      message.error(err?.message);
+      if (res) {
+        TuToastify('Start new Semester', 'success');
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+
+      TuToastify(errorMessage, 'error');
     }
   };
 
   const deleteHandler = async (id: string) => {
-    message.loading("Deleting.....");
+    TuToastify('Deleting.....', 'loading');
     try {
-      //   console.log(data);
       const res = await deleteSemesterRegistrations(id);
       if (res) {
-        message.success("Semester Registration Deleted successfully");
+        TuToastify('Semester Registration Deleted successfully', 'success');
       }
-    } catch (err: any) {
-      //   console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
   const columns = [
     {
-      title: "Start Date",
-      dataIndex: "startDate",
-      render: function (data: any) {
-        return data && dayjs(data).format("MMM D, YYYY hh:mm A");
+      title: 'Start Date',
+      dataIndex: 'startDate',
+      render: function (data: string) {
+        return data && dayjs(data).format('MMM D, YYYY hh:mm A');
       },
       sorter: true,
     },
     {
-      title: "End Date",
-      dataIndex: "endDate",
-      render: function (data: any) {
-        return data && dayjs(data).format("MMM D, YYYY hh:mm A");
+      title: 'End Date',
+      dataIndex: 'endDate',
+      render: function (data: string) {
+        return data && dayjs(data).format('MMM D, YYYY hh:mm A');
       },
       sorter: true,
     },
     {
-      title: "Status",
-      dataIndex: "status",
+      title: 'Status',
+      dataIndex: 'status',
       sorter: true,
     },
     {
-      title: "Academic semester",
-      dataIndex: "academicSemester",
+      title: 'Academic semester',
+      dataIndex: 'academicSemester',
       sorter: true,
-      render: function (data: any) {
+      render: function (data: { title: string }) {
         return <>{data?.title}</>;
       },
     },
     {
-      title: "CreatedAt",
-      dataIndex: "createdAt",
-      render: function (data: any) {
-        return data && dayjs(data).format("MMM D, YYYY hh:mm A");
+      title: 'CreatedAt',
+      dataIndex: 'createdAt',
+      render: function (data: string) {
+        return data && dayjs(data).format('MMM D, YYYY hh:mm A');
       },
       sorter: true,
     },
     {
-      title: "Action",
-      render: function (data: any) {
+      title: 'Action',
+      render: function (data: { id: string; status: 'ENDED' }) {
         return (
           <>
             <Link href={`/admin/semester-registration/edit/${data?.id}`}>
               <Button
                 style={{
-                  margin: "0px 5px",
+                  margin: '0px 5px',
                 }}
-                type="primary"
+                variant='default'
               >
-                <EditOutlined />
+                <Edit />
               </Button>
             </Link>
-            {data?.status === "ENDED" && (
-              <Tooltip title="Start Semester" placement="bottom">
+            {data?.status === 'ENDED' && (
+              <Tooltip>
                 <Button
-                  type="primary"
+                  variant='default'
                   onClick={() => handleStartSemester(data?.id)}
                   style={{
-                    margin: "0px 5px",
+                    margin: '0px 5px',
                   }}
                 >
-                  <PlayCircleOutlined />
+                  <PlayCircle />
                 </Button>
+                <TooltipContent>
+                  <p>Start Semester</p>
+                </TooltipContent>
               </Tooltip>
             )}
-            <Button
-              onClick={() => deleteHandler(data?.id)}
-              type="primary"
-              danger
-            >
-              <DeleteOutlined />
+            <Button onClick={() => deleteHandler(data?.id)} variant='default'>
+              <Trash />
             </Button>
           </>
         );
@@ -156,68 +151,57 @@ const SemesterRegistrationPage = () => {
   ];
 
   const onPaginationChange = (page: number, pageSize: number) => {
-    console.log("Page:", page, "PageSize:", pageSize);
+    console.log('Page:', page, 'PageSize:', pageSize);
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
+  const onTableChange = (
+    pagination: number,
+    filter: number,
+    sorter: { order: string; field: string }
+  ) => {
     const { order, field } = sorter;
-    // console.log(order, field);
     setSortBy(field as string);
-    setSortOrder(order === "ascend" ? "asc" : "desc");
+    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
   };
 
   const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
-    setSearchTerm("");
+    setSortBy('');
+    setSortOrder('');
+    setSearchTerm('');
   };
 
   return (
     <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: "admin",
-            link: "/admin",
-          },
-        ]}
+      <Input
+        type='text'
+        placeholder='Search...'
+        style={{
+          width: '20%',
+        }}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+        }}
       />
-
-      <ActionBar title="Semester Registration List">
-        <Input
-          type="text"
-          size="large"
-          placeholder="Search..."
-          style={{
-            width: "20%",
-          }}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-          }}
+      <div>
+        <ActionBar
+          title={actionBarObj.semesterRegistrationList.title}
+          link={actionBarObj.semesterRegistrationList.link}
+          btnText={actionBarObj.semesterRegistrationList.btnText}
         />
-        <div>
-          <Link href="/admin/semester-registration/create">
-            <Button type="primary">Create</Button>
-          </Link>
-          {(!!sortBy || !!sortOrder || !!searchTerm) && (
-            <Button
-              onClick={resetFilters}
-              type="primary"
-              style={{ margin: "0px 5px" }}
-            >
-              <ReloadOutlined />
-            </Button>
-          )}
-        </div>
-      </ActionBar>
+        {(!!sortBy || !!sortOrder || !!searchTerm) && (
+          <Button onClick={resetFilters} variant='default' style={{ margin: '0px 5px' }}>
+            <Repeat />
+          </Button>
+        )}
+      </div>
 
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={semesterRegistrations}
+        columns={columns as []}
+        dataSource={semesterRegistrations as []}
         pageSize={size}
-        totalPages={meta?.total}
+        totalRecords={meta?.total}
         showSizeChanger={true}
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}

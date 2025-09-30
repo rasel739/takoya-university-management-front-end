@@ -1,10 +1,8 @@
-"use client";
-import ActionBar from "@/components/ui/ActionBar";
-import ClassSchedule from "@/components/ui/ClassSchedule";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import UMTable from "@/components/ui/UMTable";
-import { useMyCourseSchedulesQuery } from "@/redux/api/studentApi";
-import { IOfferedCourseSchedule } from "@/types";
+'use client';
+import ClassSchedule from '@/components/ui/ClassSchedule';
+import UMTable from '@/components/ui/UMTable';
+import { useMyCourseSchedulesQuery } from '@/redux/api/studentApi';
+import { IOfferedCourseSchedule } from '@/types';
 
 const MyCourseSchedulePage = () => {
   const { data, isLoading } = useMyCourseSchedulesQuery({});
@@ -12,37 +10,33 @@ const MyCourseSchedulePage = () => {
 
   const columns = [
     {
-      title: "Course name",
-      dataIndex: "offeredCourse",
-      render: function (data: any) {
+      title: 'Course name',
+      dataIndex: 'offeredCourse',
+      render: function (data: { course: { title: string } }) {
         return <>{data.course.title}</>;
       },
     },
     {
-      title: "Credit",
-      dataIndex: "offeredCourse",
-      render: function (data: any) {
+      title: 'Credit',
+      dataIndex: 'offeredCourse',
+      render: function (data: { course: { credits: number } }) {
         return <>{data.course.credits}</>;
       },
     },
     {
-      title: "Section",
-      dataIndex: "offeredCourseSection",
-      render: function (data: any) {
+      title: 'Section',
+      dataIndex: 'offeredCourseSection',
+      render: function (data: { title: string }) {
         return <>{data.title}</>;
       },
     },
     {
-      title: "Class Schedules",
-      dataIndex: "offeredCourseSection",
-      render: function (data: any) {
+      title: 'Class Schedules',
+      dataIndex: 'offeredCourseSection',
+      render: function (data: { offeredCourseClassSchedules: IOfferedCourseSchedule[] }) {
         return (
           <>
-            <ClassSchedule
-              data={
-                data.offeredCourseClassSchedules as IOfferedCourseSchedule[]
-              }
-            />
+            <ClassSchedule data={data.offeredCourseClassSchedules as IOfferedCourseSchedule[]} />
           </>
         );
       },
@@ -51,19 +45,12 @@ const MyCourseSchedulePage = () => {
 
   return (
     <>
-      <UMBreadCrumb
-        items={[
-          { label: `student`, link: `/student` },
-          { label: `courses`, link: `/student/courses` },
-        ]}
-      />
-
-      <ActionBar title="My course schedules"></ActionBar>
+      <h1 className='text-2xl font-bold tracking-tight'>My course schedules</h1>
 
       <UMTable
         loading={isLoading}
-        dataSource={myCourseSchedules}
-        columns={columns}
+        dataSource={myCourseSchedules as []}
+        columns={columns as []}
         showPagination={false}
       />
     </>

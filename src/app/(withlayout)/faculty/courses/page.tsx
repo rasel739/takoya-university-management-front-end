@@ -1,175 +1,154 @@
-"use client";
-import ActionBar from "@/components/ui/ActionBar";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { Button, Input } from "antd";
-import Link from "next/link";
-import { ReloadOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { useDebounced } from "@/redux/hooks";
-import UMTable from "@/components/ui/UMTable";
-import { IOfferedCourseSchedule, IOfferedCourseSection } from "@/types";
-import { useFacultyCoursesQuery } from "@/redux/api/facultyApi";
+'use client';
+
+import Link from 'next/link';
+import { useState } from 'react';
+import { useDebounced } from '@/redux/hooks';
+import UMTable from '@/components/ui/UMTable';
+import { IOfferedCourseSchedule, IOfferedCourseSection } from '@/types';
+import { useFacultyCoursesQuery } from '@/redux/api/facultyApi';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Repeat } from 'lucide-react';
+
+interface FacultyCourseRow {
+  course: {
+    id: string;
+    title: string;
+    code: string;
+    credits: number;
+  };
+  sections: {
+    section: IOfferedCourseSection;
+    classSchedules: IOfferedCourseSchedule[];
+  }[];
+}
 
 const FacultyCoursesPage = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
-  const [sortBy, setSortBy] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  query["limit"] = size;
-  query["page"] = page;
-  query["sortBy"] = sortBy;
-  query["sortOrder"] = sortOrder;
+  query['limit'] = size;
+  query['page'] = page;
+  query['sortBy'] = sortBy;
+  query['sortOrder'] = sortOrder;
 
   const debouncedSearchTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,
   });
 
-  if (!!debouncedSearchTerm) {
-    query["searchTerm"] = debouncedSearchTerm;
+  if (debouncedSearchTerm) {
+    query['searchTerm'] = debouncedSearchTerm;
   }
+
   const { data, isLoading } = useFacultyCoursesQuery({ ...query });
 
-  const myCourses = data?.myCourses;
+  const myCourses = data?.myCourses as FacultyCourseRow[] | undefined;
   const meta = data?.meta;
-
-  // console.log(myCourses);
 
   const columns = [
     {
-      title: "Course name",
-      dataIndex: "course",
-      render: function (data: any) {
-        return <>{data?.title}</>;
-      },
+      title: 'Course Name',
+      dataIndex: 'course',
+      render: (course: FacultyCourseRow['course']) => <>{course?.title}</>,
     },
     {
-      title: "Code",
-      dataIndex: "course",
-      render: function (data: any) {
-        return <>{data?.code}</>;
-      },
+      title: 'Code',
+      dataIndex: 'course',
+      render: (course: FacultyCourseRow['course']) => <>{course?.code}</>,
     },
     {
-      title: "Credit",
-      dataIndex: "course",
-      render: function (data: any) {
-        return <>{data?.credits}</>;
-      },
+      title: 'Credit',
+      dataIndex: 'course',
+      render: (course: FacultyCourseRow['course']) => <>{course?.credits}</>,
     },
     {
-      title: "Section",
-      dataIndex: "sections",
-      render: function (
-        data: {
-          classSchedules: IOfferedCourseSchedule[];
-          section: IOfferedCourseSection;
-        }[]
-      ) {
-        const section = data?.map((el) => el?.section);
-        return (
-          <>
-            {section?.map((el, index) => {
-              return (
-                <div key={index} style={{ margin: "20px 0px" }}>
-                  <span>
-                    Sec - {el?.title} ({el?.currentlyEnrolledStudent}/
-                    {el?.maxCapacity})
-                  </span>
-                </div>
-              );
-            })}
-          </>
-        );
-      },
+      title: 'Sections',
+      dataIndex: 'sections',
+      render: (sections: FacultyCourseRow['sections']) => (
+        <div className='space-y-2'>
+          {sections?.map((el, index) => (
+            <div key={index} className='rounded-md border p-2 bg-muted/40 text-sm'>
+              Sec - {el.section?.title} ({el.section?.currentlyEnrolledStudent}/
+              {el.section?.maxCapacity})
+            </div>
+          ))}
+        </div>
+      ),
     },
-
     {
-      title: "Action",
-      render: function (data: any) {
-        const section: IOfferedCourseSection[] | undefined =
-          data?.sections?.map((el: any) => el?.section);
-        return (
-          <>
-            {section?.map((el: IOfferedCourseSection, index: number) => {
-              return (
-                <div key={index} style={{ margin: "20px 0px" }}>
-                  <Link
-                    href={`/faculty/courses/student?courseId=${data?.course?.id}&offeredCourseSectionId=${el?.id}`}
-                  >
-                    <Button type="primary">View all students</Button>
-                  </Link>
-                </div>
-              );
-            })}
-          </>
-        );
-      },
+      title: 'Action',
+      render: (row: FacultyCourseRow) => (
+        <div className='space-y-2'>
+          {row.sections?.map((el, index) => (
+            <Link
+              key={index}
+              href={`/faculty/courses/student?courseId=${row.course.id}&offeredCourseSectionId=${el.section?.id}`}
+            >
+              <Button variant='default' size='sm'>
+                View all students
+              </Button>
+            </Link>
+          ))}
+        </div>
+      ),
     },
   ];
+
   const onPaginationChange = (page: number, pageSize: number) => {
-    console.log("Page:", page, "PageSize:", pageSize);
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
+
+  const onTableChange = (
+    _pagination: number,
+    _filter: number,
+    sorter: { order: string; field: string }
+  ) => {
     const { order, field } = sorter;
-    // console.log(order, field);
-    setSortBy(field as string);
-    setSortOrder(order === "ascend" ? "asc" : "desc");
+    setSortBy(field || '');
+    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
   };
 
   const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
-    setSearchTerm("");
+    setSortBy('');
+    setSortOrder('');
+    setSearchTerm('');
   };
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: "faculty",
-            link: "/faculty",
-          },
-        ]}
-      />
-      <ActionBar title="My Courses">
-        <Input
-          size="large"
-          placeholder="Search"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: "20%",
-          }}
-        />
-        <div>
+    <div className='p-6 space-y-6'>
+      <div className='flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0'>
+        <h1 className='text-2xl font-bold'>My Courses</h1>
+        <div className='flex items-center gap-2'>
+          <Input
+            placeholder='Search'
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='w-full md:w-64'
+          />
           {(!!sortBy || !!sortOrder || !!searchTerm) && (
-            <Button
-              style={{ margin: "0px 5px" }}
-              type="primary"
-              onClick={resetFilters}
-            >
-              <ReloadOutlined />
+            <Button variant='default' onClick={resetFilters}>
+              <Repeat className='h-4 w-4' />
             </Button>
           )}
         </div>
-      </ActionBar>
+      </div>
 
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={myCourses}
+        columns={columns as []}
+        dataSource={myCourses as []}
         pageSize={size}
-        totalPages={meta?.total}
-        showSizeChanger={true}
+        totalRecords={meta?.total}
+        showSizeChanger
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}
-        showPagination={true}
+        showPagination
       />
     </div>
   );

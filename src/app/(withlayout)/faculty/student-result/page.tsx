@@ -1,242 +1,183 @@
-"use client";
-import ActionBar from "@/components/ui/ActionBar";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { Button, Input, Tag, message } from "antd";
-import Link from "next/link";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  FilterOutlined,
-  ReloadOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
-import { Fragment, useState } from "react";
-import { useDebounced } from "@/redux/hooks";
-import UMTable from "@/components/ui/UMTable";
-import dayjs from "dayjs";
-import BaseRow from "@/components/ui/BaseRow";
-import { ExamType } from "@/constants/global";
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import dayjs from 'dayjs';
+
+import UMTable from '@/components/ui/UMTable';
+import BaseRow from '@/components/ui/BaseRow';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Repeat, Tag } from 'lucide-react';
+import { useDebounced } from '@/redux/hooks';
+import { TuToastify } from '@/lib/reactToastify';
+import { ExamType } from '@/constants/global';
 import {
   useStudentEnrolledCourseMarksQuery,
   useUpdateFinalMarksMutation,
-} from "@/redux/api/studentEnrollCourseMarkApi";
-import { IStudentEnrolledCourseMark } from "@/types";
+} from '@/redux/api/studentEnrollCourseMarkApi';
+import { IStudentEnrolledCourseMark } from '@/types';
 
-const StudentResultPage = ({ searchParams }: Record<string, any>) => {
-  const [updateFinalMarks] = useUpdateFinalMarksMutation();
-  const [academicSemesterId, setAcademicSemesterId] = useState<string>();
+interface StudentResultPageProps {
+  searchParams: {
+    studentId: string;
+    courseId: string;
+    offeredCourseSectionId: string;
+  };
+}
 
-  const query: Record<string, any> = {};
-
+const StudentResultPage = ({ searchParams }: StudentResultPageProps) => {
   const { studentId, courseId, offeredCourseSectionId } = searchParams;
 
+  const [updateFinalMarks] = useUpdateFinalMarksMutation();
+  const [academicSemesterId, setAcademicSemesterId] = useState<string>();
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
-  const [sortBy, setSortBy] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  query["limit"] = size;
-  query["page"] = page;
-  query["sortBy"] = sortBy;
-  query["sortOrder"] = sortOrder;
+  const query: Record<string, unknown> = {
+    limit: size,
+    page,
+    sortBy,
+    sortOrder,
+    studentId,
+    courseId,
+    offeredCourseSectionId,
+  };
 
-  const debouncedSearchTerm = useDebounced({
-    searchQuery: searchTerm,
-    delay: 600,
-  });
+  const debouncedSearchTerm = useDebounced({ searchQuery: searchTerm, delay: 600 });
+  if (debouncedSearchTerm) query['searchTerm'] = debouncedSearchTerm;
 
-  if (!!debouncedSearchTerm) {
-    query["searchTerm"] = debouncedSearchTerm;
-  }
-
-  if (!!studentId || !!courseId || !!offeredCourseSectionId) {
-    query["studentId"] = studentId;
-    query["courseId"] = courseId;
-    query["offeredCourseSectionId"] = offeredCourseSectionId;
-  }
-
-  const { data, isLoading } = useStudentEnrolledCourseMarksQuery({ ...query });
-
+  const { data, isLoading } = useStudentEnrolledCourseMarksQuery(query);
   const studentEnrolledCourseMarks = data?.studentEnrolledCourseMarks;
   const meta = data?.meta;
 
-  // console.log(studentEnrolledCourseMarks);
-
-  const handleUpdateFinalMarks = async (values: any) => {
-    // console.log(values);
+  const handleUpdateFinalMarks = async (values: {
+    studentId: string;
+    courseId: string;
+    academicSemesterId: string | undefined;
+  }) => {
     try {
-      const res = await updateFinalMarks(values);
-      if (res) {
-        message.success("Final Marks Updated");
-      }
-    } catch (err: any) {
-      message.error(err.message);
+      await updateFinalMarks(values).unwrap();
+      TuToastify('Final Marks Updated', 'success');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
   const columns = [
     {
-      title: "Student id",
-      dataIndex: "student",
-      render: function (data: any) {
-        return (
-          <>
-            <table>
-              <BaseRow title="name">
-                {data?.firstName} {data?.middleName} {data?.lastName}
-              </BaseRow>
-              <BaseRow title="student ID">{data?.studentId}</BaseRow>
-            </table>
-          </>
-        );
-      },
+      title: 'Student Info',
+      dataIndex: 'student',
+      render: (data: IStudentEnrolledCourseMark['student']) => (
+        <div className='space-y-1'>
+          <BaseRow title='Name'>
+            {data?.firstName} {data?.middleName} {data?.lastName}
+          </BaseRow>
+          <BaseRow title='Student ID'>{data?.studentId}</BaseRow>
+        </div>
+      ),
     },
     {
-      title: "Grade info",
-      render: function (data: any) {
-        return (
-          <table>
-            <BaseRow title="grade">{!data?.grade ? "-" : data?.grade}</BaseRow>
-            <BaseRow title="total marks">{data?.marks}</BaseRow>
-          </table>
-        );
-      },
+      title: 'Grade Info',
+      render: (data: IStudentEnrolledCourseMark) => (
+        <div className='space-y-1'>
+          <BaseRow title='Grade'>{data?.grade || '-'}</BaseRow>
+          <BaseRow title='Total Marks'>{data?.marks}</BaseRow>
+        </div>
+      ),
     },
     {
-      title: "Exam type",
-      dataIndex: "examType",
+      title: 'Exam Type',
+      dataIndex: 'examType',
       sorter: true,
-      render: function (data: any) {
-        return (
-          <Tag color={data === ExamType.MIDTERM ? "magenta" : "blue"}>
-            {data}
-          </Tag>
-        );
-      },
+      render: (data: ExamType) => (
+        <Tag color={data === ExamType.MIDTERM ? 'magenta' : 'blue'}>{data}</Tag>
+      ),
     },
     {
-      title: "Created at",
-      dataIndex: "createdAt",
-      render: function (data: any) {
-        return data && dayjs(data).format("MMM D, YYYY hh:mm A");
-      },
+      title: 'Created At',
+      dataIndex: 'createdAt',
       sorter: true,
+      render: (data: string) => data && dayjs(data).format('MMM D, YYYY hh:mm A'),
     },
     {
-      title: "Action",
-      render: function (data: any) {
+      title: 'Action',
+      render: (data: IStudentEnrolledCourseMark) => {
         setAcademicSemesterId(data?.academicSemesterId);
         return (
-          <>
-            <Link
-              href={`/faculty/update-mark?&examType=${data?.examType}&marks=${data?.marks}&academicSemesterId=${data?.academicSemesterId}&studentId=${studentId}&courseId=${courseId}&offeredCourseSectionId=${offeredCourseSectionId}`}
-            >
-              <Button type="primary" style={{ marginLeft: "3px" }}>
-                Update marks
-              </Button>
-            </Link>
-          </>
+          <Link
+            href={`/faculty/update-mark?examType=${data?.examType}&marks=${data?.marks}&academicSemesterId=${data?.academicSemesterId}&studentId=${studentId}&courseId=${courseId}&offeredCourseSectionId=${offeredCourseSectionId}`}
+          >
+            <Button variant='default'>Update Marks</Button>
+          </Link>
         );
       },
     },
   ];
 
-  const onPaginationChange = (page: number, pageSize: number) => {
-    console.log("Page:", page, "PageSize:", pageSize);
-    setPage(page);
-    setSize(pageSize);
-  };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
-    const { order, field } = sorter;
-    // console.log(order, field);
-    setSortBy(field as string);
-    setSortOrder(order === "ascend" ? "asc" : "desc");
+  const resetFilters = () => {
+    setSortBy('');
+    setSortOrder('');
+    setSearchTerm('');
   };
 
-  const resetFilters = () => {
-    setSortBy("");
-    setSortOrder("");
-    setSearchTerm("");
-  };
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: "faculty",
-            link: "/faculty",
-          },
-          {
-            label: "courses",
-            link: "/faculty/courses",
-          },
-          {
-            label: "students",
-            link: "/faculty/courses/student",
-          },
-        ]}
-      />
-      <ActionBar title="Student Marks">
-        <Input
-          size="large"
-          placeholder="Search"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: "20%",
-          }}
-        />
-        <div>
-          {(!!sortBy || !!sortOrder || !!searchTerm) && (
-            <Button
-              style={{ margin: "0px 5px" }}
-              type="primary"
-              onClick={resetFilters}
-            >
-              <ReloadOutlined />
+    <div className='p-6 space-y-6'>
+      {/* Header */}
+      <div className='flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0'>
+        <h1 className='text-2xl font-bold'>Student Marks</h1>
+        <div className='flex items-center space-x-2'>
+          <Input
+            placeholder='Search'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='w-full md:w-64'
+          />
+          {(sortBy || sortOrder || searchTerm) && (
+            <Button variant='default' onClick={resetFilters}>
+              <Repeat />
             </Button>
           )}
         </div>
+      </div>
 
-        <div style={{ marginLeft: "auto" }}>
-          {data?.studentEnrolledCourseMarks
-            .filter(
-              (el: IStudentEnrolledCourseMark) => el.examType === ExamType.FINAL
-            )
-            .map((el, index) => {
-              if (el.marks > 0) {
-                return (
-                  <Fragment key={index}>
-                    <Button
-                      type="primary"
-                      size="large"
-                      onClick={() =>
-                        handleUpdateFinalMarks({
-                          studentId,
-                          courseId,
-                          academicSemesterId,
-                        })
-                      }
-                    >
-                      Update Final Marks
-                    </Button>
-                  </Fragment>
-                );
-              }
-            })}
+      {studentEnrolledCourseMarks?.some((el) => el.examType === ExamType.FINAL && el.marks > 0) && (
+        <div className='flex justify-end'>
+          <Button
+            variant='default'
+            onClick={() =>
+              handleUpdateFinalMarks({
+                studentId,
+                courseId,
+                academicSemesterId,
+              })
+            }
+          >
+            Update Final Marks
+          </Button>
         </div>
-      </ActionBar>
+      )}
 
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={studentEnrolledCourseMarks}
+        columns={columns as []}
+        dataSource={studentEnrolledCourseMarks as []}
         pageSize={size}
-        totalPages={meta?.total}
-        showSizeChanger={true}
-        onPaginationChange={onPaginationChange}
-        onTableChange={onTableChange}
-        showPagination={true}
+        totalRecords={meta?.total}
+        showSizeChanger
+        onPaginationChange={(page, pageSize) => {
+          setPage(page);
+          setSize(pageSize);
+        }}
+        onTableChange={(_, __, sorter) => {
+          setSortBy(sorter.field || '');
+          setSortOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
+        }}
+        showPagination
       />
     </div>
   );

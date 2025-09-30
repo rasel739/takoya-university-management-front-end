@@ -17,7 +17,7 @@ interface ISteps {
 interface IStepsProps {
   steps: ISteps[];
   persistKey: string;
-  submitHandler: (el: any) => void;
+  submitHandler: (el: unknown) => void;
   navigateLink?: string;
 }
 
@@ -85,7 +85,7 @@ export default function StepperForm({
 
   const items = steps.map((item) => ({ key: item.title ?? '', title: item.title ?? '' }));
 
-  const handleStudentOnSubmit = (data: any) => {
+  const handleStudentOnSubmit = (data: unknown) => {
     // call user's submit handler
     submitHandler(data);
 

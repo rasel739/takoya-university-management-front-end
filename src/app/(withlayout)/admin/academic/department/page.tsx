@@ -1,11 +1,8 @@
 'use client';
-
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
 import UMTable from '@/components/ui/UMTable';
 
 import Link from 'next/link';
 import { useState } from 'react';
-// import ActionBar from '@/components/ui/ActionBar';
 import { useDebounced } from '@/redux/hooks';
 import dayjs from 'dayjs';
 import {
@@ -14,9 +11,12 @@ import {
 } from '@/redux/api/academic/departmentApi';
 import { TuToastify } from '@/lib/reactToastify';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
+import { Repeat } from 'lucide-react';
 
 const ACDepartmentPage = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
@@ -29,7 +29,6 @@ const ACDepartmentPage = () => {
   query['page'] = page;
   query['sortBy'] = sortBy;
   query['sortOrder'] = sortOrder;
-  // query["searchTerm"] = searchTerm;
 
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
@@ -47,14 +46,13 @@ const ACDepartmentPage = () => {
   const deleteHandler = async (id: string) => {
     TuToastify('Deleting.....', 'loading');
     try {
-      //   console.log(data);
       const res = await deleteAcademicDepartment(id);
       if (res) {
         TuToastify('Department Deleted successfully', 'success');
       }
-    } catch (err: any) {
-      //   console.error(err.message);
-      TuToastify(err.message, 'error');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
@@ -66,21 +64,21 @@ const ACDepartmentPage = () => {
     {
       title: 'Faculty',
       dataIndex: 'academicFaculty',
-      render: function (data: any) {
+      render: function (data: { title: string }) {
         return <>{data?.title}</>;
       },
     },
     {
       title: 'CreatedAt',
       dataIndex: 'createdAt',
-      render: function (data: any) {
+      render: function (data: string) {
         return data && dayjs(data).format('MMM D, YYYY hh:mm A');
       },
       sorter: true,
     },
     {
       title: 'Action',
-      render: function (data: any) {
+      render: function (data: { id: string }) {
         return (
           <>
             <Link href={`/admin/academic/department/edit/${data?.id}`}>
@@ -88,7 +86,7 @@ const ACDepartmentPage = () => {
                 style={{
                   margin: '0px 5px',
                 }}
-                onClick={() => console.log(data)}
+                variant='default'
               >
                 Edit
               </Button>
@@ -105,60 +103,53 @@ const ACDepartmentPage = () => {
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
+  const onTableChange = (
+    pagination: number,
+    filter: number,
+    sorter: { order: string; field: string }
+  ) => {
     const { order, field } = sorter;
-    // console.log(order, field);
     setSortBy(field as string);
     setSortOrder(order === 'ascend' ? 'asc' : 'desc');
   };
 
-  // const resetFilters = () => {
-  //   setSortBy('');
-  //   setSortOrder('');
-  //   setSearchTerm('');
-  // };
+  const resetFilters = () => {
+    setSortBy('');
+    setSortOrder('');
+    setSearchTerm('');
+  };
 
   return (
     <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: 'admin',
-            link: '/admin',
-          },
-        ]}
+      <Input
+        type='text'
+        placeholder='Search...'
+        style={{
+          width: '20%',
+        }}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+        }}
       />
-
-      {/* <ActionBar title='Academic Department List'>
-        <Input
-          type='text'
-          size='large'
-          placeholder='Search...'
-          style={{
-            width: '20%',
-          }}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-          }}
+      <div>
+        <ActionBar
+          title={actionBarObj.academicDepartment.title}
+          link={actionBarObj.academicDepartment.link}
+          btnText={actionBarObj.academicDepartment.btnText}
         />
-        <div>
-          <Link href='/admin/academic/department/create'>
-            <Button type='primary'>Create</Button>
-          </Link>
-          {(!!sortBy || !!sortOrder || !!searchTerm) && (
-            <Button onClick={resetFilters} type='primary' style={{ margin: '0px 5px' }}>
-              <ReloadOutlined />
-            </Button>
-          )}
-        </div>
-      </ActionBar> */}
+        {(!!sortBy || !!sortOrder || !!searchTerm) && (
+          <Button onClick={resetFilters} variant='default' style={{ margin: '0px 5px' }}>
+            <Repeat />
+          </Button>
+        )}
+      </div>
 
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={academicDepartments}
+        columns={columns as []}
+        dataSource={academicDepartments as []}
         pageSize={size}
-        totalPages={meta?.total}
+        totalRecords={meta?.total}
         showSizeChanger={true}
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}

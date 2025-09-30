@@ -8,7 +8,7 @@ export interface IMeta {
 }
 
 export type ResponseSuccessType = {
-  data: any;
+  data: unknown;
   meta?: IMeta;
 };
 
@@ -71,6 +71,9 @@ export interface IFaculty {
   permanentAddress: string;
   createdAt: string;
   updatedAt: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
   __v: number;
 }
 export interface IStudent {

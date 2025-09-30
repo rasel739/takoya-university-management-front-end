@@ -1,26 +1,39 @@
 'use client';
-import Form from '@/components/Forms/Form';
-import FormInput from '@/components/forms/FormInput';
-import ActionBar from '@/components/ui/ActionBar';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-import { useUpdateMarksMutation } from '@/redux/api/studentEnrollCourseMarkApi';
-import { Button, Col, Row, message } from 'antd';
 
-const UpdateMarksPage = ({ searchParams }: Record<string, any>) => {
+import Form from '@/components/forms/Form';
+import FormInput from '@/components/forms/FormInput';
+import { TuToastify } from '@/lib/reactToastify';
+import { useUpdateMarksMutation } from '@/redux/api/studentEnrollCourseMarkApi';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+interface UpdateMarksProps {
+  searchParams: {
+    examType: string;
+    marks: string | number;
+    academicSemesterId: string;
+    studentId: string;
+    courseId: string;
+    offeredCourseSectionId: string;
+  };
+}
+
+const UpdateMarksPage = ({ searchParams }: UpdateMarksProps) => {
   const { examType, marks, academicSemesterId, studentId, courseId, offeredCourseSectionId } =
     searchParams;
 
   const [updateMarks] = useUpdateMarksMutation();
 
-  const onSubmit = async (values: any) => {
-    values.marks = parseInt(values.marks);
+  const onSubmit = async (values: { marks: string | number }) => {
+    values.marks = Number(values.marks);
     try {
       const res = await updateMarks(values).unwrap();
       if (res) {
-        message.success('Marks updated');
+        TuToastify('Marks updated', 'success');
       }
-    } catch (err: any) {
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
 
@@ -34,41 +47,28 @@ const UpdateMarksPage = ({ searchParams }: Record<string, any>) => {
   };
 
   return (
-    <>
-      <UMBreadCrumb
-        items={[
-          { label: 'faculty', link: '/faculty' },
-          { label: 'courses', link: '/faculty/courses' },
-          {
-            label: 'students',
-            link: '/faculty/courses/student',
-          },
-          {
-            label: 'result',
-            link: '/faculty/student-result',
-          },
-        ]}
-      />
-      <ActionBar title='Update mark'></ActionBar>
-      <Form defaultValues={defaultValues} submitHandler={onSubmit}>
-        <p>Exam type: {examType}</p>
-        <Row>
-          <Col
-            span={10}
-            style={{
-              margin: '10px 0px',
-            }}
-          >
-            <FormInput name='marks' label='Marks' />
-          </Col>
-          <Col span={24}>
-            <Button type='primary' htmlType='submit'>
-              Update
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </>
+    <div className='p-6'>
+      <h1 className='text-2xl font-bold mb-6'>Update Marks</h1>
+
+      <Card className='shadow-md rounded-2xl'>
+        <CardHeader>
+          <CardTitle className='text-lg'>Exam Type: {examType}</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <Form defaultValues={defaultValues} submitHandler={onSubmit}>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <FormInput name='marks' label='Marks' />
+              <div className='flex items-end'>
+                <Button type='submit' className='w-full'>
+                  Update
+                </Button>
+              </div>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

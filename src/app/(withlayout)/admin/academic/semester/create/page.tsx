@@ -1,67 +1,65 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
+import { useAddAcademicSemesterMutation } from '@/redux/api/academic/semesterApi';
+import { monthOptions } from '@/constants/global';
+
 import FormYearPicker from '@/components/forms/FormYearPicker';
 import FormSelectField from '@/components/forms/FormSelectField';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
-import { monthOptions } from '@/constants/global';
-import { useAddAcademicSemesterMutation } from '@/redux/api/academic/semesterApi';
 
-import { Button, Col, Row, message } from 'antd';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { TuToastify } from '@/lib/reactToastify';
+import Form from '@/components/forms/Form';
 
 const semesterOptions = [
-  {
-    label: 'Autumn',
-    value: 'Autumn',
-  },
-  {
-    label: 'Summer',
-    value: 'Summer',
-  },
-  {
-    label: 'Fall',
-    value: 'Fall',
-  },
+  { label: 'Autumn', value: 'Autumn' },
+  { label: 'Summer', value: 'Summer' },
+  { label: 'Fall', value: 'Fall' },
 ];
+
+type AcademicSemesterFormValues = {
+  title: 'Autumn' | 'Summer' | 'Fall';
+  startMonth: string;
+  endMonth: string;
+  year: string | number;
+  code?: string;
+};
 
 const CreateACSemesterPage = () => {
   const [addAcademicSemester] = useAddAcademicSemesterMutation();
 
-  const onSubmit = async (data: any) => {
-    if (data?.title == 'Autumn') data['code'] = '01';
-    else if (data?.title == 'Summer') data['code'] = '02';
+  const onSubmit = async (data: AcademicSemesterFormValues) => {
+    if (data?.title === 'Autumn') data['code'] = '01';
+    else if (data?.title === 'Summer') data['code'] = '02';
     else data['code'] = '03';
 
-    data.year = parseInt(data.year);
+    data.year = Number(data?.year);
 
-    // console.log(data);
+    TuToastify('Creating...', 'loading');
 
-    message.loading('Creating.....');
     try {
-      const res = addAcademicSemester(data);
-      if (!!res) {
-        message.success('Academic Semester Created successfully');
+      const res = await addAcademicSemester(data).unwrap();
+      if (res) {
+        TuToastify('Academic Semester Created successfully ✅', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'academic', link: `/${base}/academic` },
-          { label: 'semester', link: `/${base}/academic/semester` },
-        ]}
-      />
-      <h1>Create Academic Semester</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <div style={{ margin: '10px 0' }}>
+    <div className='flex justify-center items-center min-h-screen bg-gray-50 p-6'>
+      <Card className='w-full max-w-2xl shadow-lg border rounded-2xl'>
+        <CardHeader>
+          <CardTitle className='text-xl font-semibold text-center'>
+            Create Academic Semester
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form submitHandler={onSubmit}>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <FormSelectField
                 size='large'
                 name='title'
@@ -69,8 +67,6 @@ const CreateACSemesterPage = () => {
                 label='Title'
                 placeholder='Select'
               />
-            </div>
-            <div style={{ margin: '10px 0' }}>
               <FormSelectField
                 size='large'
                 name='startMonth'
@@ -78,8 +74,6 @@ const CreateACSemesterPage = () => {
                 label='Start Month'
                 placeholder='Select'
               />
-            </div>
-            <div style={{ margin: '10px 0' }}>
               <FormSelectField
                 size='large'
                 name='endMonth'
@@ -87,17 +81,17 @@ const CreateACSemesterPage = () => {
                 label='End Month'
                 placeholder='Select'
               />
-            </div>
-            <div style={{ margin: '10px 0' }}>
               <FormYearPicker name='year' label='Year' picker='year' />
             </div>
-          </Col>
-        </Row>
 
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
-      </Form>
+            <div className='flex justify-end mt-6'>
+              <Button type='submit' className='px-6'>
+                Add Semester
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

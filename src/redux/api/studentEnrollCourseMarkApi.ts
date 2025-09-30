@@ -1,23 +1,20 @@
-import { IMeta, IStudentEnrolledCourseMark } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { IMeta, IStudentEnrolledCourseMark } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-export const BASE_STUDENT_COURSE_MARKS = "/student-enrolled-course-marks";
+export const BASE_STUDENT_COURSE_MARKS = '/student-enrolled-course-marks';
 
 const studentEnrollCourseMarkApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     myMarks: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${BASE_STUDENT_COURSE_MARKS}/my-marks`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
-      transformResponse: (
-        response: IStudentEnrolledCourseMark[],
-        meta: IMeta
-      ) => {
+      transformResponse: (response: IStudentEnrolledCourseMark[], meta: IMeta) => {
         return {
           myMarks: response,
           meta,
@@ -26,17 +23,14 @@ const studentEnrollCourseMarkApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.student],
     }),
     studentEnrolledCourseMarks: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${BASE_STUDENT_COURSE_MARKS}`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
-      transformResponse: (
-        response: IStudentEnrolledCourseMark[],
-        meta: IMeta
-      ) => {
+      transformResponse: (response: IStudentEnrolledCourseMark[], meta: IMeta) => {
         return {
           studentEnrolledCourseMarks: response,
           meta,
@@ -47,7 +41,7 @@ const studentEnrollCourseMarkApi = baseApi.injectEndpoints({
     updateMarks: build.mutation({
       query: (data) => ({
         url: `${BASE_STUDENT_COURSE_MARKS}/update-marks`,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.student],
@@ -55,7 +49,7 @@ const studentEnrollCourseMarkApi = baseApi.injectEndpoints({
     updateFinalMarks: build.mutation({
       query: (data) => ({
         url: `${BASE_STUDENT_COURSE_MARKS}/update-course-final-marks`,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.student],

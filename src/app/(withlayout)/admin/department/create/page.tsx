@@ -1,45 +1,45 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
+import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { TuToastify } from '@/lib/reactToastify';
 import { useAddDepartmentMutation } from '@/redux/api/departmentApi';
-import { Button, Col, Row, message } from 'antd';
 
 const CreateDepartmentPage = () => {
   const [addDepartment] = useAddDepartmentMutation();
 
-  const onSubmit = async (data: any) => {
-    message.loading('Creating.....');
+  const onSubmit = async (data: { title: string }) => {
+    TuToastify('Creating.....', 'loading');
     try {
-      console.log(data);
-      await addDepartment(data);
-      message.success('Department added successfully');
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+      await addDepartment(data).unwrap();
+      TuToastify('Department added successfully', 'success');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'department', link: `/${base}/department` },
-        ]}
-      />
-      <h1>Create Department</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <FormInput name='title' label='Title' />
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
-      </Form>
+    <div className='flex justify-center items-center min-h-screen bg-gray-50 p-6'>
+      <Card className='w-full max-w-lg shadow-md rounded-2xl'>
+        <CardHeader>
+          <CardTitle className='text-xl font-semibold text-center'>Create Department</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form submitHandler={onSubmit}>
+            <div className='grid grid-cols-1 gap-4'>
+              <FormInput name='title' label='Title' />
+            </div>
+            <div className='mt-6 flex justify-end'>
+              <Button variant='default' type='submit' className='px-6'>
+                Add
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

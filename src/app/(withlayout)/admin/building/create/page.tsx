@@ -1,45 +1,45 @@
 'use client';
-import Form from '@/components/Forms/Form';
+
 import FormInput from '@/components/forms/FormInput';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
 import { useAddBuildingMutation } from '@/redux/api/buildingApi';
-import { Button, Col, Row, message } from 'antd';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { TuToastify } from '@/lib/reactToastify';
+import Form from '@/components/forms/Form';
 
 const CreateBuildPage = () => {
   const [addBuilding] = useAddBuildingMutation();
-  const onSubmit = async (data: any) => {
-    message.loading('Creating.....');
+
+  const onSubmit = async (data: { title: string }) => {
+    TuToastify('Creating...', 'loading');
     try {
       const res = await addBuilding(data).unwrap();
-      // console.log(res);
       if (res?.id) {
-        message.success('Building added successfully');
+        TuToastify('Building added successfully', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'building', link: `/${base}/building` },
-        ]}
-      />
-      <h1>Create Building</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
+    <div className='max-w-2xl mx-auto p-6'>
+      <Card className='p-6 shadow-md'>
+        <h1 className='text-2xl font-bold mb-6 text-center'>Create Building</h1>
+
+        <Form submitHandler={onSubmit}>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
             <FormInput name='title' label='Title' />
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
-      </Form>
+          </div>
+
+          <div className='flex justify-end'>
+            <Button type='submit' className='px-6'>
+              Add
+            </Button>
+          </div>
+        </Form>
+      </Card>
     </div>
   );
 };

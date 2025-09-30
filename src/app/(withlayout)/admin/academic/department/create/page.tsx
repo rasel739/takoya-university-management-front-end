@@ -1,8 +1,10 @@
 'use client';
 
+import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
 import FormSelectField, { SelectOptions } from '@/components/forms/FormSelectField';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
 
 import { useAddAcademicDepartmentMutation } from '@/redux/api/academic/departmentApi';
 import { useAcademicFacultiesQuery } from '@/redux/api/academic/facultyApi';
@@ -10,62 +12,51 @@ import { useAcademicFacultiesQuery } from '@/redux/api/academic/facultyApi';
 const CreateACDepartmentPage = () => {
   const [addAcademicDepartment] = useAddAcademicDepartmentMutation();
 
-  const { data, isLoading } = useAcademicFacultiesQuery({
+  const { data } = useAcademicFacultiesQuery({
     limit: 100,
     page: 1,
   });
-  const academicFaculties = data?.academicFaculties;
-  const acFacultiesOptions = academicFaculties?.map((faculty) => {
-    return {
-      label: faculty?.title,
-      value: faculty?.id,
-    };
-  });
 
-  const onSubmit = async (data: any) => {
-    message.loading('Creating.....');
+  const academicFaculties = data?.academicFaculties;
+  const acFacultiesOptions = academicFaculties?.map((faculty) => ({
+    label: faculty?.title,
+    value: faculty?.id,
+  }));
+
+  const onSubmit = async (formData: Record<string, string>) => {
+    TuToastify('Creating.....', 'loading');
     try {
-      // console.log(data);
-      const res = await addAcademicDepartment(data);
+      const res = await addAcademicDepartment(formData);
       if (!!res) {
-        message.success('AC Department added successfully');
+        TuToastify('AC Department added successfully', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'academic', link: `/${base}/academic` },
-          { label: 'department', link: `/${base}/academic/department` },
-        ]}
-      />
-      <h1>Create Academic Department</h1>
+    <div className='max-w-2xl mx-auto p-6'>
+      <h1 className='text-xl font-semibold mb-6'>Create Academic Department</h1>
       <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <FormInput name='title' label='Academic Department Title' />
-          </Col>
-        </Row>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <FormSelectField
-              size='large'
-              name='academicFacultyId'
-              options={acFacultiesOptions as SelectOptions[]}
-              label='Academic Faculty'
-              placeholder='Select'
-            />
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <FormInput name='title' label='Academic Department Title' />
+
+          <FormSelectField
+            size='large'
+            name='academicFacultyId'
+            options={acFacultiesOptions as SelectOptions[]}
+            label='Academic Faculty'
+            placeholder='Select'
+          />
+        </div>
+
+        <div className='mt-6'>
+          <Button variant='default' type='submit'>
+            Add
+          </Button>
+        </div>
       </Form>
     </div>
   );

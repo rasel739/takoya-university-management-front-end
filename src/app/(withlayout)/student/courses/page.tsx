@@ -1,24 +1,20 @@
-"use client";
-import ActionBar from "@/components/ui/ActionBar";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { Button, Input } from "antd";
-
-import { useState } from "react";
-import UMTable from "@/components/ui/UMTable";
-import { useMyCoursesQuery } from "@/redux/api/studentApi";
+'use client';
+import { useState } from 'react';
+import UMTable from '@/components/ui/UMTable';
+import { useMyCoursesQuery } from '@/redux/api/studentApi';
 
 const StudentCoursesPage = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
-  const [sortBy, setSortBy] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('');
 
-  query["limit"] = size;
-  query["page"] = page;
-  query["sortBy"] = sortBy;
-  query["sortOrder"] = sortOrder;
+  query['limit'] = size;
+  query['page'] = page;
+  query['sortBy'] = sortBy;
+  query['sortOrder'] = sortOrder;
 
   const { data, isLoading } = useMyCoursesQuery({ ...query });
 
@@ -27,76 +23,71 @@ const StudentCoursesPage = () => {
 
   const columns = [
     {
-      title: "Course name",
-      dataIndex: "course",
-      render: function (data: any) {
+      title: 'Course name',
+      dataIndex: 'course',
+      render: function (data: { title: string }) {
         return <>{data?.title}</>;
       },
     },
     {
-      title: "Code",
-      dataIndex: "course",
-      render: function (data: any) {
+      title: 'Code',
+      dataIndex: 'course',
+      render: function (data: { code: string }) {
         return <>{data?.code}</>;
       },
     },
     {
-      title: "Credit",
-      dataIndex: "course",
-      render: function (data: any) {
+      title: 'Credit',
+      dataIndex: 'course',
+      render: function (data: { credits: number }) {
         return <>{data?.credits}</>;
       },
     },
     {
-      title: "Status",
-      dataIndex: "status",
+      title: 'Status',
+      dataIndex: 'status',
     },
     {
-      title: "Grade",
-      dataIndex: "grade",
+      title: 'Grade',
+      dataIndex: 'grade',
       render: function (data: string) {
         return <>{!data ? <>-</> : data}</>;
       },
     },
     {
-      title: "Points",
-      dataIndex: "point",
+      title: 'Points',
+      dataIndex: 'point',
     },
     {
-      title: "Total marks",
-      dataIndex: "totalMarks",
+      title: 'Total marks',
+      dataIndex: 'totalMarks',
     },
   ];
   const onPaginationChange = (page: number, pageSize: number) => {
-    console.log("Page:", page, "PageSize:", pageSize);
+    console.log('Page:', page, 'PageSize:', pageSize);
     setPage(page);
     setSize(pageSize);
   };
-  const onTableChange = (pagination: any, filter: any, sorter: any) => {
+  const onTableChange = (
+    pagination: number,
+    filter: number,
+    sorter: { order: string; field: string }
+  ) => {
     const { order, field } = sorter;
-    // console.log(order, field);
     setSortBy(field as string);
-    setSortOrder(order === "ascend" ? "asc" : "desc");
+    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
   };
 
   return (
     <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: "student",
-            link: "/student",
-          },
-        ]}
-      />
-      <ActionBar title="My Courses"></ActionBar>
+      <h1 className='text-2xl font-bold tracking-tight'>My Courses</h1>
 
       <UMTable
         loading={isLoading}
-        columns={columns}
-        dataSource={myCourses}
+        columns={columns as []}
+        dataSource={myCourses as []}
         pageSize={size}
-        totalPages={meta?.total}
+        totalRecords={meta?.total}
         showSizeChanger={true}
         onPaginationChange={onPaginationChange}
         onTableChange={onTableChange}

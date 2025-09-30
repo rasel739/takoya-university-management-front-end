@@ -8,7 +8,24 @@ type ActionBarProps = {
   btnText?: string;
 };
 
-type ActionBarKey = 'admin' | 'department' | 'faculty' | 'student' | 'user';
+type ActionBarKey =
+  | 'admin'
+  | 'department'
+  | 'faculty'
+  | 'student'
+  | 'user'
+  | 'semester'
+  | 'academic'
+  | 'academicDepartment'
+  | 'building'
+  | 'course'
+  | 'departmentList'
+  | 'facultyList'
+  | 'studentList'
+  | 'offeredCourseList'
+  | 'courseSectionList'
+  | 'roomList'
+  | 'semesterRegistrationList';
 
 type ActionBarObjType = Record<ActionBarKey, ActionBarProps>;
 
@@ -37,6 +54,66 @@ export const actionBarObj: ActionBarObjType = {
     title: 'Manage User',
     link: '/super_admin/user/create',
     btnText: 'Create User',
+  },
+  semester: {
+    title: 'Academic Semester',
+    link: '/admin/academic/semester/create',
+    btnText: 'Create Semester',
+  },
+  academic: {
+    title: 'Academic Faculty',
+    link: '/admin/academic/faculty/create',
+    btnText: 'Create Academic',
+  },
+  academicDepartment: {
+    title: 'Academic Department',
+    link: '/admin/academic/department/create',
+    btnText: 'Create Academic Department',
+  },
+  building: {
+    title: 'Building List',
+    link: '/admin/building/create',
+    btnText: 'Create Building',
+  },
+  course: {
+    title: 'Course List',
+    link: '/admin/course/create',
+    btnText: 'Create Course',
+  },
+  departmentList: {
+    title: 'Department List',
+    link: '/admin/department/create',
+    btnText: 'Department Create',
+  },
+  facultyList: {
+    title: 'Faculty List',
+    link: '/admin/manage-faculty/create',
+    btnText: 'Create Faculty',
+  },
+  studentList: {
+    title: 'Student List',
+    link: '/admin/manage-student/create',
+    btnText: 'Create Student',
+  },
+  offeredCourseList: {
+    title: 'Offered Course List',
+    link: '/admin/offered-course/create',
+    btnText: 'Create Offered Course',
+  },
+  courseSectionList: {
+    title: 'Course Section List',
+    link: '/admin/offered-course-section/create',
+    btnText: 'Create Course Section',
+  },
+  roomList: {
+    title: 'Room List',
+    link: '/admin/room/create',
+    btnText: 'Create Room',
+  },
+  semesterRegistrationList: {
+    title: 'Semester Registration List',
+    link: '/admin/semester-registration/create',
+    btnText: 'Create Semester Registration',
   },
 };
 

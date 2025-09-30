@@ -1,74 +1,68 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
+import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
 import FormSelectField, { SelectOptions } from '@/components/forms/FormSelectField';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { TuToastify } from '@/lib/reactToastify';
 import { useBuildingsQuery } from '@/redux/api/buildingApi';
 import { useAddRoomMutation } from '@/redux/api/roomApi';
-import { Button, Col, Row, message } from 'antd';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const CreateRoomPage = () => {
   const [addRoom] = useAddRoomMutation();
-  const { data, isLoading } = useBuildingsQuery({
+  const { data } = useBuildingsQuery({
     limit: 100,
     page: 1,
   });
-  const buildings = data?.buildings;
-  const buildingOptions = buildings?.map((building) => {
-    return {
-      label: building?.title,
-      value: building?.id,
-    };
-  });
 
-  const onSubmit = async (data: any) => {
-    message.loading('Creating.....');
+  const buildings = data?.buildings;
+  const buildingOptions: SelectOptions[] =
+    buildings?.map((building) => ({
+      label: building?.title ?? '',
+      value: building?.id ?? '',
+    })) ?? [];
+
+  const onSubmit = async (data: Record<string, unknown>) => {
+    TuToastify('Creating...', 'loading');
     try {
-      // console.log(data);
       const res = await addRoom(data).unwrap();
       if (res?.id) {
-        message.success('Room created successfully');
+        TuToastify('Room created successfully', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'room', link: `/${base}/room` },
-        ]}
-      />
-      <h1>Create Room</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <div style={{ margin: '10px 0px' }}>
+    <div className='max-w-4xl mx-auto p-6'>
+      <Card className='shadow-md'>
+        <CardHeader>
+          <CardTitle className='text-xl font-bold'>Create Room</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form submitHandler={onSubmit}>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <FormInput name='roomNumber' label='Room No.' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
               <FormInput name='floor' label='Floor' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
               <FormSelectField
-                size='large'
                 name='buildingId'
-                options={buildingOptions as SelectOptions[]}
+                options={buildingOptions}
                 label='Building'
-                placeholder='Select'
+                placeholder='Select a building'
               />
             </div>
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
-      </Form>
+
+            <div className='mt-6 flex justify-end'>
+              <Button variant='default' type='submit' className='px-6'>
+                Add
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

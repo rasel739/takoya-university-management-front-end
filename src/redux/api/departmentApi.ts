@@ -1,15 +1,15 @@
-import { IDepartment, IMeta } from "@/types";
-import { tagTypes } from "../tag-types";
-import { baseApi } from "./baseApi";
+import { IDepartment, IMeta } from '@/types';
+import { tagTypes } from '../tag-types';
+import { baseApi } from './baseApi';
 
-const DEPARTMENT_URL = "/management-departments";
+const DEPARTMENT_URL = '/management-departments';
 
 export const departmentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     departments: build.query({
-      query: (arg: Record<string, any>) => ({
+      query: (arg: Record<string, unknown>) => ({
         url: DEPARTMENT_URL,
-        method: "GET",
+        method: 'GET',
         params: arg,
       }),
       transformResponse: (response: IDepartment, meta: IMeta) => {
@@ -24,7 +24,7 @@ export const departmentApi = baseApi.injectEndpoints({
     addDepartment: build.mutation({
       query: (data) => ({
         url: DEPARTMENT_URL,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.department],
@@ -34,7 +34,7 @@ export const departmentApi = baseApi.injectEndpoints({
     department: build.query({
       query: (id) => ({
         url: `${DEPARTMENT_URL}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.department],
     }),
@@ -43,7 +43,7 @@ export const departmentApi = baseApi.injectEndpoints({
     updateDepartment: build.mutation({
       query: (data) => ({
         url: `${DEPARTMENT_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.department],
@@ -53,7 +53,7 @@ export const departmentApi = baseApi.injectEndpoints({
     deleteDepartment: build.mutation({
       query: (id) => ({
         url: `${DEPARTMENT_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.department],
     }),

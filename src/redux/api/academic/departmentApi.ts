@@ -1,17 +1,17 @@
-import { tagTypes } from "@/redux/tag-types";
-import { IAcademicDepartment, IMeta } from "@/types";
-import { baseApi } from "../baseApi";
+import { tagTypes } from '@/redux/tag-types';
+import { IAcademicDepartment, IMeta } from '@/types';
+import { baseApi } from '../baseApi';
 
-const ACADEMIC_DEPARTMENT_URL = "/academic-departments";
+const ACADEMIC_DEPARTMENT_URL = '/academic-departments';
 
 export const academicDepartmentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get all academic departments
     academicDepartments: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: ACADEMIC_DEPARTMENT_URL,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -27,7 +27,7 @@ export const academicDepartmentApi = baseApi.injectEndpoints({
     academicDepartment: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${ACADEMIC_DEPARTMENT_URL}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.academicDepartment],
     }),
@@ -35,7 +35,7 @@ export const academicDepartmentApi = baseApi.injectEndpoints({
     addAcademicDepartment: build.mutation({
       query: (data) => ({
         url: ACADEMIC_DEPARTMENT_URL,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.academicDepartment],
@@ -44,7 +44,7 @@ export const academicDepartmentApi = baseApi.injectEndpoints({
     updateAcademicDepartment: build.mutation({
       query: (data) => ({
         url: `${ACADEMIC_DEPARTMENT_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.academicDepartment],
@@ -54,7 +54,7 @@ export const academicDepartmentApi = baseApi.injectEndpoints({
     deleteAcademicDepartment: build.mutation({
       query: (id) => ({
         url: `${ACADEMIC_DEPARTMENT_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.academicDepartment],
     }),

@@ -1,109 +1,98 @@
 'use client';
-import ACDepartmentIDField from '@/components/forms/ACDepartmentIDField';
+
+import { useState } from 'react';
 import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
 import FormSelectField, { SelectOptions } from '@/components/forms/FormSelectField';
+import ACDepartmentIDField from '@/components/forms/ACDepartmentIDField';
 import SemesterRegistrationField from '@/components/forms/SemesterRegistrationField';
 import FormDynamicFields from '@/components/ui/FormDynamicFields';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { Button } from '@/components/ui/button';
+import { TuToastify } from '@/lib/reactToastify';
 import { useOfferedCoursesQuery } from '@/redux/api/offeredCourseApi';
 import { useAddOfferedCourseSectionMutation } from '@/redux/api/offeredCourseSectionApi';
-import { Button, Col, Row, message } from 'antd';
-import { useState } from 'react';
 
 const CreateOfferedCourseSectionPage = () => {
   const [addOfferedCourseSection] = useAddOfferedCourseSectionMutation();
   const [acDepartmentId, setAcDepartmentId] = useState<string>();
   const [semesterRegistrationId, setSemesterRegistrationId] = useState<string>();
 
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
+  if (acDepartmentId) query['academicDepartmentId'] = acDepartmentId;
+  if (semesterRegistrationId) query['semesterRegistrationId'] = semesterRegistrationId;
 
-  if (!!acDepartmentId) {
-    query['academicDepartmentId'] = acDepartmentId;
-  }
-  if (!!semesterRegistrationId) {
-    query['semesterRegistrationId'] = semesterRegistrationId;
-  }
-  const { data, isLoading } = useOfferedCoursesQuery({
+  const { data } = useOfferedCoursesQuery({
     limit: 10,
     page: 1,
     ...query,
   });
 
   const offeredCourses = data?.offeredCourses;
-  const offeredCoursesOptions = offeredCourses?.map((offCourse) => {
-    // console.log(offCourse?.course?.id);
-    return {
-      label: offCourse?.course?.title,
-      value: offCourse?.id,
-    };
-  });
+  const offeredCoursesOptions: SelectOptions[] =
+    offeredCourses?.map((offCourse) => ({
+      label: offCourse?.course?.title ?? 'Untitled Course',
+      value: offCourse?.id as string,
+    })) ?? [];
 
-  const onSubmit = async (data: any) => {
-    data.maxCapacity = parseInt(data?.maxCapacity);
-    // console.log(data);
-    message.loading('Creating.....');
+  const onSubmit = async (formData: {
+    title: string;
+    maxCapacity: string | number;
+    offeredCourseId: string;
+  }) => {
+    const payload = {
+      ...formData,
+      maxCapacity: Number(formData.maxCapacity),
+    };
+
+    TuToastify('Creating...', 'loading');
     try {
-      const res = await addOfferedCourseSection(data).unwrap();
+      const res = await addOfferedCourseSection(payload).unwrap();
       if (res?.id) {
-        message.success('Offered Course created successfully');
+        TuToastify('Offered Course Section created successfully', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          {
-            label: 'offered-course-section',
-            link: `/${base}/offered-course-section`,
-          },
-        ]}
-      />
-      <h1>Create Offered Course Section</h1>
+    <div className='space-y-6'>
+      <h1 className='text-2xl font-semibold'>Create Offered Course Section</h1>
       <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <div style={{ margin: '10px 0px' }}>
-              <SemesterRegistrationField
-                name='semesterRegistration'
-                label='Semester Registration'
-                onChange={(el) => setSemesterRegistrationId(el)}
-              />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <ACDepartmentIDField
-                name='academicDepartment'
-                label='Academic Department'
-                onChange={(el) => setAcDepartmentId(el)}
-              />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormSelectField
-                options={offeredCoursesOptions as SelectOptions[]}
-                name='offeredCourseId'
-                label='Offered Course'
-              />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormInput label='Section' name='title' />
-            </div>
-            <div style={{ margin: '10px 0px' }}>
-              <FormInput label='Max Capacity' name='maxCapacity' />
-            </div>
-            <Button type='primary' htmlType='submit'>
-              add
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+          <div className='space-y-4'>
+            <SemesterRegistrationField
+              name='semesterRegistration'
+              label='Semester Registration'
+              onChange={(el) => setSemesterRegistrationId(el)}
+            />
+
+            <ACDepartmentIDField
+              name='academicDepartment'
+              label='Academic Department'
+              onChange={(el) => setAcDepartmentId(el)}
+            />
+
+            <FormSelectField
+              options={offeredCoursesOptions}
+              name='offeredCourseId'
+              label='Offered Course'
+            />
+
+            <FormInput label='Section' name='title' />
+
+            <FormInput label='Max Capacity' name='maxCapacity' />
+
+            <Button type='submit' className='w-full'>
+              Add
             </Button>
-          </Col>
-          <Col span={16} style={{ margin: '10px 0' }}>
+          </div>
+
+          <div className='md:col-span-2'>
             <FormDynamicFields />
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Form>
     </div>
   );

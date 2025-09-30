@@ -1,16 +1,16 @@
-import { IMeta, IMyCourse, IStudent } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { IMeta, IMyCourse, IStudent } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-const STUDENT_URL = "/students";
+const STUDENT_URL = '/students';
 export const studentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get all students
     students: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${STUDENT_URL}`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -26,17 +26,17 @@ export const studentApi = baseApi.injectEndpoints({
     student: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${STUDENT_URL}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.student],
     }),
     // create a new student
     addStudentWithFormData: build.mutation({
       query: (data) => ({
-        url: "/users/create-student",
-        method: "POST",
+        url: '/users/create-student',
+        method: 'POST',
         data,
-        contentType: "multipart/form-data",
+        contentType: 'multipart/form-data',
       }),
       invalidatesTags: [tagTypes.student],
     }),
@@ -44,7 +44,7 @@ export const studentApi = baseApi.injectEndpoints({
     updateStudent: build.mutation({
       query: (data) => ({
         url: `${STUDENT_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.student],
@@ -53,15 +53,15 @@ export const studentApi = baseApi.injectEndpoints({
     deleteStudent: build.mutation({
       query: (id) => ({
         url: `${STUDENT_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.student],
     }),
     myCourses: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${STUDENT_URL}/my-courses`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -74,10 +74,10 @@ export const studentApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.student],
     }),
     myCourseSchedules: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: `${STUDENT_URL}/my-course-schedules`,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -90,9 +90,9 @@ export const studentApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.student],
     }),
     myAcademicInfos: build.query({
-      query: (arg: Record<string, any>) => ({
+      query: (arg: Record<string, unknown>) => ({
         url: `${STUDENT_URL}/my-academic-infos`,
-        method: "GET",
+        method: 'GET',
         params: arg,
       }),
       providesTags: [tagTypes.student],

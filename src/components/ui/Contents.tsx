@@ -5,6 +5,12 @@ import TUBreadCrumb from './TUBreadCrumb';
 import { getUserInfo } from '@/service/auth.service';
 import { usePathname } from 'next/navigation';
 
+type User = {
+  id: string;
+  name: string;
+  role?: string;
+};
+
 function formatSegment(seg?: string) {
   if (!seg) return '';
   try {
@@ -17,7 +23,7 @@ function formatSegment(seg?: string) {
 
 const Contents = () => {
   const user = (typeof window !== 'undefined' && getUserInfo && getUserInfo()) || {};
-  const roleRaw = (user as any)?.role ?? '';
+  const roleRaw = (user as User)?.role ?? '';
   const pathname = usePathname() ?? '/';
 
   const crumbs = useMemo(() => {

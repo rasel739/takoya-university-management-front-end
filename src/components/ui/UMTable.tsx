@@ -11,6 +11,10 @@ export type Column<T> = {
   render?: (value: T[keyof T], record: T, index: number) => React.ReactNode;
 };
 
+type OnTableChange =
+  | ((sortColumn?: string, sortOrder?: 'asc' | 'desc') => void)
+  | ((pagination: number, filter: number, sorter: { order: string; field: string }) => void);
+
 export type UMTableProps<T> = {
   loading?: boolean;
   columns: Column<T>[];
@@ -19,7 +23,7 @@ export type UMTableProps<T> = {
   totalRecords?: number;
   showSizeChanger?: boolean;
   onPaginationChange?: (page: number, pageSize: number) => void;
-  onTableChange?: (sortColumn?: string, sortOrder?: 'asc' | 'desc') => void;
+  onTableChange?: OnTableChange;
   showPagination?: boolean;
 };
 

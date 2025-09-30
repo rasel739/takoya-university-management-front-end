@@ -1,15 +1,15 @@
-import { IMeta, ISemesterRegistration } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { IMeta, ISemesterRegistration } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-const BASE_SEMESTER_REGISTRATION = "/semester-registrations";
+const BASE_SEMESTER_REGISTRATION = '/semester-registrations';
 export const semesterRegistrationApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     semesterRegistrations: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: BASE_SEMESTER_REGISTRATION,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -24,14 +24,14 @@ export const semesterRegistrationApi = baseApi.injectEndpoints({
     semesterRegistration: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${BASE_SEMESTER_REGISTRATION}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.semesterRegistration],
     }),
     addSemesterRegistrations: build.mutation({
       query: (data) => ({
         url: BASE_SEMESTER_REGISTRATION,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.semesterRegistration],
@@ -39,7 +39,7 @@ export const semesterRegistrationApi = baseApi.injectEndpoints({
     updateSemesterRegistrations: build.mutation({
       query: (data) => ({
         url: `${BASE_SEMESTER_REGISTRATION}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.semesterRegistration],
@@ -47,35 +47,35 @@ export const semesterRegistrationApi = baseApi.injectEndpoints({
     deleteSemesterRegistrations: build.mutation({
       query: (id) => ({
         url: `${BASE_SEMESTER_REGISTRATION}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.semesterRegistration],
     }),
     myRegistration: build.query({
       query: () => ({
         url: `${BASE_SEMESTER_REGISTRATION}/my-registration`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.courseRegistration],
     }),
     startRegistration: build.mutation({
       query: () => ({
         url: `${BASE_SEMESTER_REGISTRATION}/start-registration`,
-        method: "POST",
+        method: 'POST',
       }),
     }),
     mySemesterRegistrationCourses: build.query({
       query: () => ({
         url: `${BASE_SEMESTER_REGISTRATION}/my-semester-registration-courses
 				`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.courseRegistration],
     }),
     enrollIntoCourse: build.mutation({
       query: (data) => ({
         url: `${BASE_SEMESTER_REGISTRATION}/enroll-into-course`,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.courseRegistration],
@@ -83,7 +83,7 @@ export const semesterRegistrationApi = baseApi.injectEndpoints({
     withdrawFromCourse: build.mutation({
       query: (data) => ({
         url: `${BASE_SEMESTER_REGISTRATION}/withdraw-from-course`,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.courseRegistration],
@@ -91,14 +91,14 @@ export const semesterRegistrationApi = baseApi.injectEndpoints({
     confirmMyRegistration: build.mutation({
       query: () => ({
         url: `${BASE_SEMESTER_REGISTRATION}/confirm-registration`,
-        method: "POST",
+        method: 'POST',
       }),
       invalidatesTags: [tagTypes.courseRegistration],
     }),
     startNewSemester: build.mutation({
       query: (id) => ({
         url: `${BASE_SEMESTER_REGISTRATION}/${id}/start-new-semester`,
-        method: "POST",
+        method: 'POST',
       }),
       invalidatesTags: [tagTypes.courseRegistration],
     }),

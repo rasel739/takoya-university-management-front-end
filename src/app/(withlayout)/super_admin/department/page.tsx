@@ -77,11 +77,15 @@ const ManageDepartmentPage = () => {
     setSize(pageSize);
   };
 
-  // const onTableChange = (pagination: any, filter: any, sorter: any) => {
-  //   const { order, field } = sorter;
-  //   setSortBy(field);
-  //   setSortOrder(order === 'ascend' ? 'asc' : 'desc');
-  // };
+  const onTableChange = (
+    pagination: number,
+    filter: number,
+    sorter: { order: string; field: string }
+  ) => {
+    const { order, field } = sorter;
+    setSortBy(field);
+    setSortOrder(order === 'ascend' ? 'asc' : 'desc');
+  };
 
   const resetFilters = () => {
     setSortBy('');
@@ -120,6 +124,7 @@ const ManageDepartmentPage = () => {
         pageSize={size}
         showSizeChanger
         onPaginationChange={onPaginationChange}
+        onTableChange={onTableChange}
         showPagination
       />
     </div>

@@ -1,48 +1,55 @@
 'use client';
 
-import Form from '@/components/Forms/Form';
+import Form from '@/components/forms/Form';
 import FormInput from '@/components/forms/FormInput';
-import UMBreadCrumb from '@/components/ui/UMBreadCrumb';
+import { TuToastify } from '@/lib/reactToastify';
 import { useAddAcademicFacultyMutation } from '@/redux/api/academic/facultyApi';
 
-import { Button, Col, Row, message } from 'antd';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
+type FacultyFormValues = {
+  title: string;
+};
 
 const CreateACFacultyPage = () => {
   const [addAcademicFaculty] = useAddAcademicFacultyMutation();
 
-  const onSubmit = async (data: any) => {
-    message.loading('Creating.....');
+  const onSubmit = async (data: FacultyFormValues) => {
+    TuToastify('Creating...', 'loading');
     try {
-      console.log(data);
-      const res = await addAcademicFaculty(data);
-      if (!!res) {
-        message.success('Academic Faculty Created Successfully');
+      const res = await addAcademicFaculty(data).unwrap();
+      if (res) {
+        TuToastify('Academic Faculty Created Successfully', 'success');
       }
-    } catch (err: any) {
-      console.error(err.message);
-      message.error(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      TuToastify(errorMessage, 'error');
     }
   };
-  const base = 'admin';
+
   return (
-    <div>
-      <UMBreadCrumb
-        items={[
-          { label: `${base}`, link: `/${base}` },
-          { label: 'academic-faculty', link: `/${base}/academic/faculty` },
-        ]}
-      />
-      <h1>Create Academic Faculty</h1>
-      <Form submitHandler={onSubmit}>
-        <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
-          <Col span={8} style={{ margin: '10px 0' }}>
-            <FormInput name='title' label='Title' />
-          </Col>
-        </Row>
-        <Button type='primary' htmlType='submit'>
-          add
-        </Button>
-      </Form>
+    <div className='flex justify-center items-center min-h-screen bg-gray-50 p-6'>
+      <Card className='w-full max-w-lg shadow-lg border rounded-2xl'>
+        <CardHeader>
+          <CardTitle className='text-xl font-semibold text-center'>
+            Create Academic Faculty
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form<FacultyFormValues> submitHandler={onSubmit}>
+            <div className='grid grid-cols-1 gap-6'>
+              <FormInput name='title' label='Title' placeholder='Enter faculty title' />
+            </div>
+
+            <div className='flex justify-end mt-6'>
+              <Button type='submit' className='px-6'>
+                Add Faculty
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

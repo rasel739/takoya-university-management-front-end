@@ -1,114 +1,129 @@
-"use client";
+'use client';
 
-import ActionBar from "@/components/ui/ActionBar";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import UMTable from "@/components/ui/UMTable";
-import { useMyAcademicInfosQuery } from "@/redux/api/studentApi";
-import { Card, Col, Row, Tag } from "antd";
+import UMTable from '@/components/ui/UMTable';
+import { useMyAcademicInfosQuery } from '@/redux/api/studentApi';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+
+interface ICourse {
+  id: string;
+  course: {
+    title: string;
+  };
+  grade: string;
+  point: number;
+  status: string;
+  totalMarks: number;
+}
+
+interface IAcademicSemester {
+  title: string;
+  year: number;
+  isCurrent: boolean;
+}
+
+interface IAcademicData {
+  id: string;
+  academicSemester: IAcademicSemester;
+  completedCourses: ICourse[];
+}
+
+interface IAcademicInfo {
+  cgpa: number;
+  totalCompletedCredit: number;
+}
+
+interface IResponseData {
+  academicInfo: IAcademicInfo;
+  courses: IAcademicData[];
+}
 
 const AcademicReport = () => {
-  const query: Record<string, any> = {};
+  const query: Record<string, unknown> = {};
   const { data, isLoading } = useMyAcademicInfosQuery({ ...query });
+
+  const academicData = data as IResponseData | undefined;
+
   const columns = [
     {
-      title: "Grade Report",
-      dataIndex: "",
-      render: function (data: any) {
+      title: 'Grade Report',
+      dataIndex: '',
+      render: function (row: IAcademicData) {
         return (
-          <>
-            <div style={{ marginBottom: "15px" }}>
-              <div>
-                <b>
-                  {data?.academicSemester?.title} -{" "}
-                  {data?.academicSemester?.year}
-                </b>{" "}
-                -{" "}
-                <Tag color="blue">
-                  <b>
-                    {data?.academicSemester?.isCurrent === true
-                      ? "ongoing"
-                      : ""}
-                  </b>
-                </Tag>
-              </div>
-              <ul style={{ listStyle: "none", marginTop: "20px" }}>
-                {data?.completedCourses?.map((el: any) => {
-                  return (
-                    <li key={el.id}>
-                      <div
-                        style={{
-                          border: "1px solid #d9d9d9",
-                          borderRadius: "5px",
-                          marginBottom: "5px",
-                          padding: "10px",
-                        }}
-                      >
-                        <b>{el?.course?.title}</b>
-                        <div>
-                          <span>
-                            Grade: <b>{el?.grade}</b>
-                          </span>
-                          <span style={{ marginLeft: "20px" }}>
-                            Gpa: <b>{el?.point}</b>
-                          </span>
-                          <span style={{ marginLeft: "20px" }}>
-                            Status: <b>{el?.status}</b>
-                          </span>
-                          <span style={{ marginLeft: "20px" }}>
-                            Marks: <b>{el?.totalMarks}</b>
-                          </span>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+          <div className='mb-6 p-4 border rounded-lg bg-muted/30'>
+            <div className='flex items-center justify-between mb-3'>
+              <h3 className='text-lg font-semibold'>
+                {row.academicSemester.title} - {row.academicSemester.year}
+              </h3>
+              {row.academicSemester.isCurrent && <Badge className='bg-blue-600'>Ongoing</Badge>}
             </div>
-          </>
+
+            <ul className='space-y-3'>
+              {row.completedCourses.map((course) => (
+                <li key={course.id}>
+                  <Card className='shadow-sm'>
+                    <CardContent className='p-4'>
+                      <h4 className='font-medium'>{course.course.title}</h4>
+                      <div className='mt-2 flex flex-wrap gap-4 text-sm'>
+                        <span>
+                          Grade: <b>{course.grade}</b>
+                        </span>
+                        <span>
+                          GPA: <b>{course.point}</b>
+                        </span>
+                        <span>
+                          Status: <b>{course.status}</b>
+                        </span>
+                        <span>
+                          Marks: <b>{course.totalMarks}</b>
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          </div>
         );
       },
     },
   ];
 
   return (
-    <>
-      <UMBreadCrumb
-        items={[
-          { label: `student`, link: `/student` },
-          { label: `courses`, link: `/student/courses` },
-          { label: `schedule`, link: `/student/courses/schedule` },
-        ]}
-      />
+    <div className='space-y-6'>
+      <h1 className='text-2xl font-bold tracking-tight'>My Academic Grade Report</h1>
 
-      <ActionBar title="My Academic Grade Report" />
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <Card className='shadow'>
+          <CardHeader>
+            <CardTitle>Total CGPA</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className='text-xl font-semibold'>{academicData?.academicInfo?.cgpa ?? '-'}</p>
+          </CardContent>
+        </Card>
 
-      <Row gutter={24}>
-        <Col span={12}>
-          <Card title="Total CGPA">
-            <b>{data?.academicInfo?.cgpa}</b>
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card title="Total completed credit">
-            <b>
-              {data?.academicInfo?.totalCompletedCredit}{" "}
-              {data?.academicInfo?.totalCompletedCredit <= 1
-                ? "credit"
-                : "credits"}
-            </b>
-          </Card>
-        </Col>
-      </Row>
-
-      <div style={{ margin: "10px 0" }}>
+        <Card className='shadow'>
+          <CardHeader>
+            <CardTitle>Total Completed Credit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className='text-xl font-semibold'>
+              {academicData?.academicInfo?.totalCompletedCredit}{' '}
+              {academicData?.academicInfo?.totalCompletedCredit === 1 ? 'credit' : 'credits'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+      <div>
         <UMTable
           loading={isLoading}
-          dataSource={data?.courses}
-          columns={columns}
+          dataSource={academicData?.courses as []}
+          columns={columns as []}
           showPagination={false}
         />
       </div>
-    </>
+    </div>
   );
 };
 

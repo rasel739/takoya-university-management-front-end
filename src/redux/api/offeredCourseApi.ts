@@ -1,16 +1,16 @@
-import { IMeta, IOfferedCourse } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { IMeta, IOfferedCourse } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-const BASE_OFFERED_COURSES = "/offered-courses";
+const BASE_OFFERED_COURSES = '/offered-courses';
 
 export const offeredCourseApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     offeredCourses: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: BASE_OFFERED_COURSES,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -25,14 +25,14 @@ export const offeredCourseApi = baseApi.injectEndpoints({
     offeredCourse: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${BASE_OFFERED_COURSES}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.offeredCourse],
     }),
     addOfferedCourse: build.mutation({
       query: (data) => ({
         url: BASE_OFFERED_COURSES,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.offeredCourse],
@@ -40,7 +40,7 @@ export const offeredCourseApi = baseApi.injectEndpoints({
     updateOfferedCourse: build.mutation({
       query: (data) => ({
         url: `${BASE_OFFERED_COURSES}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.offeredCourse],
@@ -48,7 +48,7 @@ export const offeredCourseApi = baseApi.injectEndpoints({
     deleteOfferedCourse: build.mutation({
       query: (id) => ({
         url: `${BASE_OFFERED_COURSES}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.offeredCourse],
     }),

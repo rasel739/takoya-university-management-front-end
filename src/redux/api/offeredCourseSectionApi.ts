@@ -1,16 +1,16 @@
-import { IMeta, IOfferedCourseSection } from "@/types";
-import { baseApi } from "./baseApi";
-import { tagTypes } from "../tag-types";
+import { IMeta, IOfferedCourseSection } from '@/types';
+import { baseApi } from './baseApi';
+import { tagTypes } from '../tag-types';
 
-const BASE_OFFERED_COURSES_SECTION = "/offered-course-sections";
+const BASE_OFFERED_COURSES_SECTION = '/offered-course-sections';
 
 const offeredCourseSectionApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     offeredCourseSections: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: BASE_OFFERED_COURSES_SECTION,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -25,14 +25,14 @@ const offeredCourseSectionApi = baseApi.injectEndpoints({
     offeredCourseSection: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${BASE_OFFERED_COURSES_SECTION}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.offeredCourseSection],
     }),
     addOfferedCourseSection: build.mutation({
       query: (data) => ({
         url: BASE_OFFERED_COURSES_SECTION,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.offeredCourseSection],
@@ -40,7 +40,7 @@ const offeredCourseSectionApi = baseApi.injectEndpoints({
     updateOfferedCourseSection: build.mutation({
       query: (data) => ({
         url: `${BASE_OFFERED_COURSES_SECTION}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.offeredCourseSection],
@@ -48,7 +48,7 @@ const offeredCourseSectionApi = baseApi.injectEndpoints({
     deleteOfferedCourseSection: build.mutation({
       query: (id) => ({
         url: `${BASE_OFFERED_COURSES_SECTION}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.offeredCourseSection],
     }),

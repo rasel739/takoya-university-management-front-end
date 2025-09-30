@@ -1,18 +1,18 @@
-import { IAcademicFaculty, IMeta } from "@/types";
+import { IAcademicFaculty, IMeta } from '@/types';
 
-import { baseApi } from "../baseApi";
-import { tagTypes } from "@/redux/tag-types";
+import { baseApi } from '../baseApi';
+import { tagTypes } from '@/redux/tag-types';
 
-const ACADEMIC_FACULTY_URL = "/academic-faculties";
+const ACADEMIC_FACULTY_URL = '/academic-faculties';
 
 export const academicFacultyApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get all academic faculties api endpoint
     academicFaculties: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: ACADEMIC_FACULTY_URL,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -28,7 +28,7 @@ export const academicFacultyApi = baseApi.injectEndpoints({
     academicFaculty: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${ACADEMIC_FACULTY_URL}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.academicFaculty],
     }),
@@ -36,7 +36,7 @@ export const academicFacultyApi = baseApi.injectEndpoints({
     addAcademicFaculty: build.mutation({
       query: (data) => ({
         url: ACADEMIC_FACULTY_URL,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.academicFaculty],
@@ -45,7 +45,7 @@ export const academicFacultyApi = baseApi.injectEndpoints({
     updateAcademicFaculty: build.mutation({
       query: (data) => ({
         url: `${ACADEMIC_FACULTY_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.academicFaculty],
@@ -54,7 +54,7 @@ export const academicFacultyApi = baseApi.injectEndpoints({
     deleteAcademicFaculty: build.mutation({
       query: (id) => ({
         url: `${ACADEMIC_FACULTY_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.academicFaculty],
     }),

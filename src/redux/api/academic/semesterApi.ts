@@ -1,8 +1,8 @@
-import { IAcademicSemester, IMeta } from "@/types";
-import { baseApi } from "../baseApi";
-import { tagTypes } from "@/redux/tag-types";
+import { IAcademicSemester, IMeta } from '@/types';
+import { baseApi } from '../baseApi';
+import { tagTypes } from '@/redux/tag-types';
 
-const ACADEMIC_SEMESTER_URL = "/academic-semesters";
+const ACADEMIC_SEMESTER_URL = '/academic-semesters';
 
 export const academicSemesterApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -10,7 +10,7 @@ export const academicSemesterApi = baseApi.injectEndpoints({
     addAcademicSemester: build.mutation({
       query: (data) => ({
         url: ACADEMIC_SEMESTER_URL,
-        method: "POST",
+        method: 'POST',
         data,
       }),
       invalidatesTags: [tagTypes.academicSemester],
@@ -18,10 +18,10 @@ export const academicSemesterApi = baseApi.injectEndpoints({
 
     // get all ac semesters endpoint
     academicSemesters: build.query({
-      query: (arg: Record<string, any>) => {
+      query: (arg: Record<string, unknown>) => {
         return {
           url: ACADEMIC_SEMESTER_URL,
-          method: "GET",
+          method: 'GET',
           params: arg,
         };
       },
@@ -38,7 +38,7 @@ export const academicSemesterApi = baseApi.injectEndpoints({
     academicSemester: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${ACADEMIC_SEMESTER_URL}/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
       providesTags: [tagTypes.academicSemester],
     }),
@@ -47,7 +47,7 @@ export const academicSemesterApi = baseApi.injectEndpoints({
     updateAcademicSemester: build.mutation({
       query: (data) => ({
         url: `${ACADEMIC_SEMESTER_URL}/${data.id}`,
-        method: "PATCH",
+        method: 'PATCH',
         data: data.body,
       }),
       invalidatesTags: [tagTypes.academicSemester],
@@ -57,7 +57,7 @@ export const academicSemesterApi = baseApi.injectEndpoints({
     deleteAcademicSemester: build.mutation({
       query: (id) => ({
         url: `${ACADEMIC_SEMESTER_URL}/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
       invalidatesTags: [tagTypes.academicSemester],
     }),

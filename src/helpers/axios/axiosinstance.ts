@@ -1,5 +1,5 @@
 import { authKey } from '@/constants/storageKey';
-import { ResponseErrorType, ResponseSuccessType } from '@/types';
+import {  ResponseSuccessType } from '@/types';
 import { getLocalStorage } from '@/utils/local-storage';
 import axios from 'axios';
 
@@ -36,7 +36,7 @@ instance.interceptors.response.use( function onFulfilled(response) {
     return responseData;
   },
   function onRejected(error) {
-    const errorResponseObject: ResponseErrorType = {
+    const errorResponseObject = {
       statusCode: error?.response?.data?.status || 500,
       message: error?.response?.data?.message || 'An error occurred',
       errorMessage: error?.response?.data?.message,

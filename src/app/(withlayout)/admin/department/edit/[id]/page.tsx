@@ -7,12 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TuToastify } from '@/lib/reactToastify';
 import { useDepartmentQuery, useUpdateDepartmentMutation } from '@/redux/api/departmentApi';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-const EditDepartmentPage = ({ params }: PageProps) => {
+const EditDepartmentPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
 
   const { data } = useDepartmentQuery(id);

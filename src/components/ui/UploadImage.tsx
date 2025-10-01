@@ -6,6 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Trash2 } from 'lucide-react';
+import { Input } from './input';
 
 type UploadImageProps = {
   name: string;
@@ -85,7 +86,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
             loading && 'opacity-50'
           )}
         >
-          <input
+          <Input
             id={`upload-${name}`}
             type='file'
             accept={acceptedFormats.join(',')}

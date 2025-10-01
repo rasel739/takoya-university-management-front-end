@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import UMModal from '@/components/ui/UMModal';
 import { Button } from '@/components/ui/button';
 import { TuToastify } from '@/lib/reactToastify';
+import { Input } from '@/components/ui/input';
 
 const AdminPage = () => {
   const query: Record<string, string | number> = {};
@@ -148,7 +149,7 @@ const AdminPage = () => {
         link={actionBarObj.admin.link}
         btnText={actionBarObj.admin.btnText}
       />
-      <input
+      <Input
         placeholder='Search'
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{

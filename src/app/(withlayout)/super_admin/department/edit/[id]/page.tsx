@@ -10,13 +10,7 @@ import { Button } from '@/components/ui/button';
 import { TuToastify } from '@/lib/reactToastify';
 import Form from '@/components/forms/Form';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-const EditDepartmentPage = ({ params }: PageProps) => {
+const EditDepartmentPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
 
   const { data } = useDepartmentQuery(id);

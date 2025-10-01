@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Footer from './footer';
+import { Input } from '@/components/ui/input';
 
 export const Subscribe = () => {
   return (
@@ -26,13 +27,13 @@ export const Subscribe = () => {
           </p>
         </div>
         <form className='flex flex-col items-center'>
-          <input
+          <Input
             type='email'
             placeholder='Enter your email'
             className='border border-gray-300 rounded-md p-2 mb-4 w-full max-w-md'
           />
           <div className='mb-4'>
-            <input type='checkbox' id='consent' className='mr-2 ' />
+            <Input type='checkbox' id='consent' className='mr-2 ' />
             <label htmlFor='consent' className='text-sm'>
               I confirm I am over 16 and I agree to the Terms and Conditions and Privacy Notice.
               <Link href='#' className='text-blue-500 underline ml-2'>

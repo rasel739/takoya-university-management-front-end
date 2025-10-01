@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📚 Takoya University Management System (UMS)
 
-## Getting Started
+The **Takoya University Management System (UMS)** is a modern full-stack application designed to streamline academic and administrative operations within a university.
+It provides dedicated modules for **Admins**, **Faculties**, and **Students** with role-based authentication and authorization.
 
-First, run the development server:
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/rasel739/takoya-university-management-front-end.git
+cd takoya-university-management-front-end
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Frontend Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```typescript
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+NEXT_PUBLIC_API_URL=http://localhost:5000
 
-## Learn More
+```
 
-To learn more about Next.js, take a look at the following resources:
+```bash
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npm install
+yarn install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+npm run dev
 
-## Deploy on Vercel
+yarn dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Frontend**
+
+- [Next.js 15](https://nextjs.org/) (React 19, TypeScript, Tailwind CSS, Radix UI, Shadcn UI)
+- Redux Toolkit for state management
+- React Hook Form + Zod/Yup for validation
+- Framer Motion for animations
+- React Toastify for notifications
+
+**Backend**
+
+- [Express.js](https://expressjs.com/) with TypeScript
+- [MongoDB](https://www.mongodb.com/) + Mongoose ORM
+- Zod validation
+- JWT Authentication (Access & Refresh Tokens)
+
+---
+
+## 🔐 Authentication Service
+
+The authentication service provides login, logout, password management, and role-based access for:
+
+- **Admin** 👨‍💼 – Manage all users, change passwords, limited profile edits.
+- **Faculty** 👨‍🏫 – Manage/update their profile, limited editable fields.
+- **Student** 🎓 – Manage/update their profile, limited editable fields.
+
+Passwords are stored securely using **bcrypt**.
+
+---
+
+## 📡 API Endpoints
+
+### 👤 Users
+
+- `POST /users/create-student`
+- `POST /users/create-faculty`
+- `POST /users/create-admin`
+
+### 🎓 Students
+
+- `GET /students`
+- `GET /students/:id`
+- `PATCH /students/:id`
+- `DELETE /students/:id`
+
+### 👨‍🏫 Faculties
+
+- `GET /faculties`
+- `GET /faculties/:id`
+- `PATCH /faculties/:id`
+- `DELETE /faculties/:id`
+
+### 👨‍💼 Admins
+
+- `GET /admins`
+- `GET /admins/:id`
+- `PATCH /admins/:id`
+- `DELETE /admins/:id`
+
+### 🏫 Academic Semesters
+
+- `POST /academic-semesters/create-semester`
+- `GET /academic-semesters`
+- `GET /academic-semesters/:id`
+- `PATCH /academic-semesters/:id`
+- `DELETE /academic-semesters/:id`
+
+### 📖 Academic Departments
+
+- `POST /academic-departments/create-department`
+- `GET /academic-departments`
+- `GET /academic-departments/:id`
+- `PATCH /academic-departments/:id`
+- `DELETE /academic-departments/:id`
+
+### 👥 Academic Faculties
+
+- `POST /academic-faculties/create-faculty`
+- `GET /academic-faculties`
+- `GET /academic-faculties/:id`
+- `PATCH /academic-faculties/:id`
+- `DELETE /academic-faculties/:id`
+
+### 🔑 Authentication
+
+- `POST /auth/login`
+- `POST /auth/change-password`
+- `POST /auth/refresh-token`
+
+---

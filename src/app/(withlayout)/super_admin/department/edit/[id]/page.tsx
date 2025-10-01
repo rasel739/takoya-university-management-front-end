@@ -5,19 +5,21 @@ import Title from '@/app/components/common/Title';
 import FormInput from '@/components/forms/FormInput';
 
 import ActionBar, { actionBarObj } from '@/components/ui/ActionBar';
-import { useUpdateDepartmentMutation } from '@/redux/api/departmentApi';
+import { useDepartmentQuery, useUpdateDepartmentMutation } from '@/redux/api/departmentApi';
 import { Button } from '@/components/ui/button';
 import { TuToastify } from '@/lib/reactToastify';
 import Form from '@/components/forms/Form';
 
-type IDProps = {
-  params: { id: string };
-};
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
 
-const EditDepartmentPage = ({ params }: IDProps) => {
+const EditDepartmentPage = ({ params }: PageProps) => {
   const { id } = params;
 
-  // const { data, isLoading } = useDepartmentQuery(id);
+  const { data } = useDepartmentQuery(id);
   const [updateDepartment, { isLoading: isUpdating }] = useUpdateDepartmentMutation();
 
   const onSubmit = async (values: { title: string }) => {
@@ -31,9 +33,9 @@ const EditDepartmentPage = ({ params }: IDProps) => {
     }
   };
 
-  // const defaultValues = {
-  //   title: data?.title || '',
-  // };
+  const defaultValues = {
+    title: data?.title || '',
+  };
 
   return (
     <div className='p-6 space-y-6 bg-gray-50 min-h-screen'>
@@ -44,7 +46,7 @@ const EditDepartmentPage = ({ params }: IDProps) => {
       <ActionBar title='Edit Department' link={actionBarObj.department.link} />
 
       {/* Form */}
-      <Form submitHandler={onSubmit}>
+      <Form submitHandler={onSubmit} defaultValues={defaultValues}>
         <div className='flex flex-col gap-4'>
           <FormInput name='title' label='Title' />
         </div>

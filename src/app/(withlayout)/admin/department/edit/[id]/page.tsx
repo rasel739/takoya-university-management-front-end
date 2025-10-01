@@ -1,7 +1,11 @@
 import DepartmentEdit from '@/components/ui/department-edit';
 
-const EditDepartmentPage = async ({ params }: { params: { [key: string]: string | string[] } }) => {
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+interface EditDepartmentPageProps {
+  params: { id: string };
+}
+
+const EditDepartmentPage = async ({ params }: EditDepartmentPageProps) => {
+  const id = params?.id;
 
   return <DepartmentEdit id={id} />;
 };

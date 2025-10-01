@@ -26,7 +26,7 @@ const CreateFacultyPage = () => {
     formData.append('file', file as Blob);
     formData.append('data', data);
 
-    TuToastify('Creating faculty...', 'promise');
+    TuToastify('Creating faculty...', 'loading');
 
     try {
       const res = await addFacultyWithFormData(formData);

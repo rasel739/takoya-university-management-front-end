@@ -10,7 +10,7 @@ const CreateDepartmentPage = () => {
   const [addDepartment, { isLoading }] = useAddDepartmentMutation();
 
   const onSubmit = async (data: { title: string }) => {
-    TuToastify('Creating...', 'promise');
+    TuToastify('Creating...', 'loading');
     try {
       await addDepartment(data);
       TuToastify('Department added successfully!', 'success');

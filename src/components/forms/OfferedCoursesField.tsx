@@ -1,6 +1,6 @@
-import { useCoursesQuery } from "@/redux/api/courseApi";
-import FormMultiSelectField from "./FormMultiSelectField";
-import { SelectOptions } from "./FormSelectField";
+import { useCoursesQuery } from '@/redux/api/courseApi';
+import FormMultiSelectField from './FormMultiSelectField';
+import { SelectOptions } from './FormSelectField';
 
 type MultiSelectFieldProps = {
   name: string;
@@ -8,7 +8,7 @@ type MultiSelectFieldProps = {
 };
 
 const OfferedCoursesField = ({ name, label }: MultiSelectFieldProps) => {
-  const { data, isLoading } = useCoursesQuery({ limit: 10, page: 1 });
+  const { data } = useCoursesQuery({ limit: 10, page: 1 });
 
   const courses = data?.courses;
   const coursesOptions = courses?.map((course) => {
@@ -19,11 +19,7 @@ const OfferedCoursesField = ({ name, label }: MultiSelectFieldProps) => {
   });
   return (
     <>
-      <FormMultiSelectField
-        name={name}
-        label={label}
-        options={coursesOptions as SelectOptions[]}
-      />
+      <FormMultiSelectField name={name} label={label} options={coursesOptions as SelectOptions[]} />
     </>
   );
 };

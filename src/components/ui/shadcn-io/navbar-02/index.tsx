@@ -96,7 +96,6 @@ export interface Navbar02NavItem {
 
 export interface Navbar02Props extends React.HTMLAttributes<HTMLElement> {
   logo?: React.ReactNode;
-  logoHref?: string;
   navigationLinks?: Navbar02NavItem[];
   signInText?: string;
   signInHref?: string;
@@ -126,17 +125,7 @@ const defaultNavigationLinks: Navbar02NavItem[] = [
 
 export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
   (
-    {
-      className,
-      logo = <Logo />,
-      logoHref = '#',
-      navigationLinks = defaultNavigationLinks,
-      signInText = 'Sign In',
-      signInHref = '#signin',
-      onSignInClick,
-      onCtaClick,
-      ...props
-    },
+    { className, navigationLinks = defaultNavigationLinks, signInText = 'Sign In', ...props },
     ref
   ) => {
     const [isMobile, setIsMobile] = useState(false);
@@ -174,23 +163,6 @@ export const Navbar02 = React.forwardRef<HTMLElement, Navbar02Props>(
       },
       [ref]
     );
-
-    const renderIcon = (iconName: string) => {
-      switch (iconName) {
-        case 'BookOpenIcon':
-          return (
-            <BookOpenIcon size={16} className='text-foreground opacity-60' aria-hidden={true} />
-          );
-        case 'LifeBuoyIcon':
-          return (
-            <LifeBuoyIcon size={16} className='text-foreground opacity-60' aria-hidden={true} />
-          );
-        case 'InfoIcon':
-          return <InfoIcon size={16} className='text-foreground opacity-60' aria-hidden={true} />;
-        default:
-          return null;
-      }
-    };
 
     return (
       <header

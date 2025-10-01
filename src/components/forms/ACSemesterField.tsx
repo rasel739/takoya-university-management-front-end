@@ -7,7 +7,7 @@ type ACFacultyFieldProps = {
 };
 
 const ACSemesterField = ({ name, label }: ACFacultyFieldProps) => {
-  const { data, isLoading } = useAcademicSemestersQuery({
+  const { data } = useAcademicSemestersQuery({
     limit: 100,
     page: 1,
   });

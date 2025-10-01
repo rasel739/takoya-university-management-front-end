@@ -1,8 +1,8 @@
-import FormSelectField, { SelectOptions } from "./FormSelectField";
-import { useBuildingsQuery } from "@/redux/api/buildingApi";
+import FormSelectField, { SelectOptions } from './FormSelectField';
+import { useBuildingsQuery } from '@/redux/api/buildingApi';
 
 const BuildingField = () => {
-  const { data, isLoading } = useBuildingsQuery({
+  const { data } = useBuildingsQuery({
     limit: 100,
     page: 1,
   });
@@ -16,8 +16,8 @@ const BuildingField = () => {
 
   return (
     <FormSelectField
-      name="building"
-      label="building"
+      name='building'
+      label='building'
       options={buildingsOptions as SelectOptions[]}
     />
   );

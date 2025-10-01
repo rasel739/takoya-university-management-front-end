@@ -6,12 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TuToastify } from '@/lib/reactToastify';
 import { useDepartmentQuery, useUpdateDepartmentMutation } from '@/redux/api/departmentApi';
-import { Params } from 'next/dist/server/request/params';
 
 type IDProps = {
-  params: Params;
+  params: { id: string };
 };
-
 const EditDepartmentPage = ({ params }: IDProps) => {
   const { id } = params;
 
